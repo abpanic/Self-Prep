@@ -25,7 +25,7 @@ Legend: ✅ done · 🚧 in progress · ⬜ not started · ⏸ deferred
 | 06 | **Support Vector Machines** | `ML-Zero-to-Hero/svm_zero_to_hero.ipynb` | ✅ | 50 (28 code) | ✅ struct + run |
 | 07 | **K-Nearest Neighbors** | `ML-Zero-to-Hero/knn_zero_to_hero.ipynb` | ✅ | 52 (24 code) | ✅ struct + run |
 | 08 | **Naive Bayes** | `ML-Zero-to-Hero/naive_bayes_zero_to_hero.ipynb` | ✅ | 61 (30 code) | ✅ struct + run |
-| 09 | PCA & Dimensionality Reduction | `ML-Zero-to-Hero/pca_zero_to_hero.ipynb` | ⬜ | — | — |
+| 09 | **PCA & Dimensionality Reduction** | `ML-Zero-to-Hero/pca_zero_to_hero.ipynb` | ✅ | 57 (28 code) | ✅ struct + run |
 | 10 | K-Means & Clustering | `ML-Zero-to-Hero/kmeans_zero_to_hero.ipynb` | ⬜ | — | — |
 | 11 | Imbalanced Classification | `ML-Zero-to-Hero/imbalanced_classification_zero_to_hero.ipynb` | ⬜ | — | — |
 | 12 | Explainable AI | `ML-Zero-to-Hero/explainable_ai_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -33,7 +33,7 @@ Legend: ✅ done · 🚧 in progress · ⬜ not started · ⏸ deferred
 | 14 | Recommender Systems | `ML-Zero-to-Hero/recommender_systems_zero_to_hero.ipynb` | ⬜ | — | — |
 | 15 | Anomaly Detection | `ML-Zero-to-Hero/anomaly_detection_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**Total planned: 16 notebooks** (1 shared foundations + 15 topic notebooks). **9 of 16 done.**
+**Total planned: 16 notebooks** (1 shared foundations + 15 topic notebooks). **10 of 16 done.**
 
 **Scale, measured rather than projected.** The original estimate of ~150 cells each (≈ 2,300
 total) was made before NB-00 existed. Extracting the shared workflow into NB-00 cut topic
@@ -43,15 +43,15 @@ notebooks to roughly a third of that:
 |---|---|
 | NB-01 (written before NB-00 existed) | 157 |
 | NB-00 (the shared foundations) | 78 |
-| NB-02..08 (the post-NB-00 template) | 44–62, **~52 average** |
-| **Built so far (9 notebooks)** | **601** |
-| Projected total for 16 | **~965** |
+| NB-02..09 (the post-NB-00 template) | 44–62, **~53 average** |
+| **Built so far (10 notebooks)** | **658** |
+| Projected total for 16 | **~976** |
 
-So by cell count the series is **~62% built** (601 of ~965) while being 56% built by notebook
+So by cell count the series is **~67% built** (658 of ~976) while being 10 of 16 by notebook
 count. The gap is NB-01: it alone is 16% of the projected total, and every remaining notebook
-is template-sized. Do not read that as "the hard half is done" — the remaining eight include
-the two cross-cutting notebooks (11, 12) and three applied problem types (13–15), which have
-less prior art in the repo to draw on than the algorithm notebooks did.
+is template-sized. Do not read that as "the hard part is done" — the remaining six are
+NB-10 (clustering), the two cross-cutting notebooks (11, 12) and three applied problem types
+(13–15), which have less prior art in the repo to draw on than the algorithm notebooks did.
 
 Treat each as its own project with its own verification pass.
 
@@ -70,13 +70,14 @@ Self-Prep/
 │   ├── gradient_boosting_zero_to_hero.ipynb
 │   ├── svm_zero_to_hero.ipynb
 │   ├── knn_zero_to_hero.ipynb
-│   └── naive_bayes_zero_to_hero.ipynb
+│   ├── naive_bayes_zero_to_hero.ipynb
+│   └── pca_zero_to_hero.ipynb
 └── tools/
     ├── verify_notebook.py          <- the quality gate
     └── check_links.py              <- relative-link checker (see 7)
 ```
 
-Nine of the sixteen exist. Add each new file to this tree when it lands.
+Ten of the sixteen exist. Add each new file to this tree when it lands.
 
 **Two READMEs, two audiences — keep them distinct:**
 
@@ -726,7 +727,77 @@ the probability problem** → Part 4 questions → Part 5 datasets → Part 6 pa
 
 ---
 
-### NB-09 — PCA & Dimensionality Reduction ⬜
+### NB-09 — PCA & Dimensionality Reduction ✅ COMPLETE
+57 cells (28 code). Verified: structure clean, all 28 cells run under warnings-as-errors,
+every printed number audited.
+
+**Structure as built:** Part 1 theory (the problem · **variance ⇔ reconstruction** · from
+scratch by eigendecomposition · **the SVD route and conditioning** · centring & scaling ·
+choosing k · what a component *is* · **PCA is unsupervised**) → Part 2 digits worked example
+→ **Part 3 the limits** → Part 4 questions → Part 5 datasets → Part 6 papers.
+
+**Headline demonstrations** (verified numbers):
+
+- **The two definitions are one:** variance kept + reconstruction error is **constant to
+  4.6e-13** across every k from 1 to 64, and equals the total variance.
+- **From scratch == sklearn:** eigenvalues to 8.5e-14, leading 61 components to 8.5e-12 after
+  sign alignment. **30 of 61 components had the opposite sign** — sign is arbitrary.
+- **Degeneracy taught, not hidden:** digits' 3 all-zero border pixels give 3 zero eigenvalues
+  whose eigenvectors are an arbitrary basis, so only 61 of 64 components are comparable.
+- **cond(XᵀX) = cond(X)² exactly** (1e3→1e6, 1e6→1e12, 1e8→8.8e15) — the reason every
+  library uses SVD rather than eig(cov).
+- **Centring:** uncentred SVD's PC1 sits **0.05°** from the direction of the mean.
+- **Scaling:** wine raw PC1 holds 99.8% of variance with proline at 96.9% of the loading;
+  downstream accuracy **0.9552 → 0.6965** without a scaler.
+- **PCA is unsupervised:** a constructed case where PC1 holds **98.9%** of the variance and
+  scores **0.5467**, while PC2 (1.1%) scores **1.0000**.
+- **PCA is a rotation:** on concentric circles PCA(2) keeps **100%** of the variance and moves
+  a linear model from 0.4583 to 0.4617 — nothing. KernelPCA reaches 1.0000.
+- **t-SNE trade quantified:** t-SNE keeps **73.2%** of true 10-NN neighbours vs PCA's
+  **25.3%**, but is worse globally (Spearman 0.49 vs 0.60), has **no `transform`**, and runs
+  200–1500× slower.
+
+**The finding that corrects this brief's own instruction.** The brief said "**PCA inside a
+Pipeline** or you leak". Measured on pure noise (labels independent of features, so honest CV
+must be 0.50):
+
+| transform | fitted on all | in Pipeline | inflation |
+|---|---|---|---|
+| **PCA** (unsupervised) | 0.5400 | 0.5550 | **−0.0150** |
+| `SelectKBest(f_classif)` (supervised) | 0.7850 | 0.5500 | **+0.2350** |
+| LDA (supervised) | 0.6500 | 0.5900 | +0.0600 |
+
+PCA cannot leak label information because it never sees `y`. §3.4 therefore teaches the
+*correct* reasons to pipeline it (the fitted rotation must ship; tuning k requires it) and
+redirects leakage-hunting to steps that touch `y`. This is a better lesson than the blanket
+rule and is now the notebook's most distinctive section.
+
+**Other findings that changed the prose** (result kept, prose rewritten):
+
+1. **Whitening HURTS KNN (0.9526→0.9438) and HELPS logistic regression (0.9631→0.9666)** —
+   the exact opposite of the usual "whiten for distance-based methods" advice. §3.5 now
+   explains both directions and concludes it is a property of the *data*, not the model.
+2. **PCA before KNN on digits neither helps nor hurts** (PCA(29) ties all-64 at 0.9872; k=40
+   gains +0.0011) **and is slightly slower**, because fitting the rotation costs more than it
+   saves at 64 features. §2.4 and Q7 were rewritten away from the standard "PCA speeds things
+   up and denoises" claim.
+3. Draft prose claimed "anything from k≈15 upward beats all 64 pixels" — false (k=15 scores
+   0.9839 vs 0.9872). Corrected to k≈30, with a note that the grid also tuned `n_neighbors`
+   so the comparison is not like-for-like.
+
+**Bugs caught in my own verification code** (all before any notebook cell was written):
+
+- `explained_variance_` uses ddof=1; my reconstruction MSE used ddof=0, so the "kept + lost"
+  sum appeared to drift instead of being exactly constant.
+- Comparing all 64 components against sklearn's failed at 2.4e-02 because of the degenerate
+  zero-eigenvalue subspace — fixed by comparing only well-determined components.
+- The first ill-conditioning demo was already at the float64 limit, so cond(XᵀX) could not
+  show the squaring; replaced with matrices built to prescribed singular values.
+- `np.corrcoef` divides by a zero std for digits' constant border pixels — caught by the
+  warnings-as-errors verifier.
+
+**(original brief follows)**
+
 - **Unique theory:** variance maximisation ⇔ reconstruction-error minimisation; eigenvectors
   of the covariance matrix; the SVD route and why it is used in practice; explained-variance
   ratio and the scree plot; PCA is a *rotation*, components are not features.
@@ -822,6 +893,26 @@ Cross-cutting — build after the model notebooks.
 ## 9. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-07 (NB-09)
+- **NB-09 PCA & Dimensionality Reduction: COMPLETE.** 57 cells (28 code, 29 markdown).
+  Verified: structure clean, all 28 cells run under warnings-as-errors, every printed number
+  audited.
+- Built verification-first again. That paid off unusually well here: **four bugs were in my
+  own verification code**, not the notebook (ddof mismatch, degenerate-eigenvector comparison,
+  an ill-conditioning demo already at the float64 limit, and a corrcoef divide-by-zero). All
+  four would have become wrong prose if the demos had been written straight into cells.
+- **The headline finding contradicts this plan's own NB-09 brief.** The brief said "PCA inside
+  a Pipeline **or you leak**". On pure noise, fitting PCA outside the CV loop inflates accuracy
+  by **−0.015** — nothing — while `SelectKBest` inflates by **+0.235** and LDA by +0.060. PCA
+  never sees `y`, so it has no label information to smuggle. §3.4 now teaches the correct
+  reasons to pipeline PCA and points leakage-hunting at supervised steps instead. The brief
+  above has been annotated rather than silently corrected.
+- **Three more prose claims were contradicted and rewritten**, the sharpest being that
+  **whitening helps logistic regression and hurts KNN** — the reverse of the standard advice.
+- Also rewrote the "PCA denoises and speeds things up" framing: on digits it does neither
+  (ties on accuracy, marginally slower), which is a more useful thing for a reader to know
+  than a repeated slogan.
 
 ### 2026-09-06 (documentation refresh, second pass)
 - Audited the plan and root README again after NB-08 rather than only bumping the counters.
@@ -1094,12 +1185,12 @@ Append a dated entry every session. Newest first.
 
 ## 10. Open questions for the user
 
-- [x] ~~Build **NB-00 Foundations** first?~~ **Done 2026-09-06.** Through NB-08 as of the
-      latest session; next up is **NB-09 PCA & Dimensionality Reduction**.
+- [x] ~~Build **NB-00 Foundations** first?~~ **Done 2026-09-06.** Through NB-09 as of the
+      latest session; next up is **NB-10 K-Means & Clustering**.
 - [x] ~~Ship notebooks output-free?~~ **No** — the convention is **ship with outputs**.
 - [ ] **Two notebooks still ship without outputs.** As of the NB-08 session the position is:
       NB-00 40/40, NB-01 74/77, NB-02 32/35, NB-04 23/26, NB-05 22/25, NB-06 25/28, NB-07
-      24/24 — all good. **NB-03 (0/28) and NB-08 (0/30) carry none.** On GitHub those two
+      24/24 — all good. **NB-03 (0/28), NB-08 (0/30) and NB-09 (0/28) carry none.** On GitHub those two
       render as code with no results, which undercuts the "every number is verified" claim for
       a reader who is only browsing. Both pass `--run`, so each needs one clean top-to-bottom
       run in VSCode and a save — a save, not a fix.
