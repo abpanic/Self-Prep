@@ -823,6 +823,25 @@ Cross-cutting — build after the model notebooks.
 
 Append a dated entry every session. Newest first.
 
+### 2026-09-06 (documentation refresh, second pass)
+- Audited the plan and root README again after NB-08 rather than only bumping the counters.
+  Five items were stale or self-contradictory:
+  - **The file tree ended at NB-07** and did not list `tools/check_links.py`.
+  - **§5 still targeted "~100 cells"** for post-NB-00 notebooks. Measured across NB-02..08 the
+    real figure is 44–62, averaging ~52. Added a note not to pad to hit a count.
+  - **§5 documented only NB-01's part numbering** (7/8/9 for questions/datasets/papers) while
+    every notebook from NB-02 on uses 4/5/6. A fresh session following §5 would have built the
+    wrong shape. The actual topic-notebook layout is now a table of its own.
+  - **§6 rule 10 said "ship with cleared outputs"** while §10 recorded the opposite decision.
+    Rule 10 now states the ship-with-outputs convention and clarifies that the verifier
+    enforces *consistency*, not the choice.
+  - The folder README described Part 6 as containing "how to read a paper", which no
+    topic notebook has — that was NB-01's Part 9.
+- Added to §7: the dataset-download/caching note (NB-08 fetches ~14 MB), a one-liner for
+  auditing which notebooks still lack stored outputs, and a **library-gotchas table**
+  consolidating the ten deprecations and API traps paid for across NB-00..08, so they are not
+  rediscovered one notebook at a time.
+
 ### 2026-09-06 (NB-08)
 - **NB-08 Naive Bayes: COMPLETE.** 61 cells (30 code, 31 markdown). Verified: structure clean,
   all 30 cells run under warnings-as-errors, every printed number audited. Passed the full

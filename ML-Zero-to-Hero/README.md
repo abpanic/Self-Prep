@@ -100,7 +100,7 @@ Same shape every time, so you always know where to look:
 | **3** | The topic's signature problem, in depth |
 | **4** | **Tough questions** — ~12 with hidden answers, plus 3 coding challenges |
 | **5** | **Practice datasets** — 5 real ones, ordered by difficulty, each with a brief and the trap it sets |
-| **6** | **Reading the literature** — how to read a paper, then the paper behind each section |
+| **6** | **Reading the literature** — two or three papers worth starting with, a table mapping every section to its source, and one "if you read only one" pick |
 | — | Appendix — errors specific to that model, and a pre-ship checklist |
 
 Notebooks 01 and 00 predate this template slightly and carry a few extra parts; the shape is
