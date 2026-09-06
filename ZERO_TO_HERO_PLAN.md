@@ -24,7 +24,7 @@ Legend: ✅ done · 🚧 in progress · ⬜ not started · ⏸ deferred
 | 05 | **Gradient Boosting (+ XGB/LGBM/CatBoost)** | `ML-Zero-to-Hero/gradient_boosting_zero_to_hero.ipynb` | ✅ | 46 (25 code) | ✅ struct + run |
 | 06 | **Support Vector Machines** | `ML-Zero-to-Hero/svm_zero_to_hero.ipynb` | ✅ | 50 (28 code) | ✅ struct + run |
 | 07 | **K-Nearest Neighbors** | `ML-Zero-to-Hero/knn_zero_to_hero.ipynb` | ✅ | 52 (24 code) | ✅ struct + run |
-| 08 | Naive Bayes | `ML-Zero-to-Hero/naive_bayes_zero_to_hero.ipynb` | ⬜ | — | — |
+| 08 | **Naive Bayes** | `ML-Zero-to-Hero/naive_bayes_zero_to_hero.ipynb` | ✅ | 61 (30 code) | ✅ struct + run |
 | 09 | PCA & Dimensionality Reduction | `ML-Zero-to-Hero/pca_zero_to_hero.ipynb` | ⬜ | — | — |
 | 10 | K-Means & Clustering | `ML-Zero-to-Hero/kmeans_zero_to_hero.ipynb` | ⬜ | — | — |
 | 11 | Imbalanced Classification | `ML-Zero-to-Hero/imbalanced_classification_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -33,10 +33,27 @@ Legend: ✅ done · 🚧 in progress · ⬜ not started · ⏸ deferred
 | 14 | Recommender Systems | `ML-Zero-to-Hero/recommender_systems_zero_to_hero.ipynb` | ⬜ | — | — |
 | 15 | Anomaly Detection | `ML-Zero-to-Hero/anomaly_detection_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**Total planned: 16 notebooks** (1 shared foundations + 15 topic notebooks). **8 of 16 done.**
+**Total planned: 16 notebooks** (1 shared foundations + 15 topic notebooks). **9 of 16 done.**
 
-Rough scale: ~150 cells each ≈ **2,300 cells** total. This is a long programme — treat each
-notebook as its own project with its own verification pass.
+**Scale, measured rather than projected.** The original estimate of ~150 cells each (≈ 2,300
+total) was made before NB-00 existed. Extracting the shared workflow into NB-00 cut topic
+notebooks to roughly a third of that:
+
+| | Cells |
+|---|---|
+| NB-01 (written before NB-00 existed) | 157 |
+| NB-00 (the shared foundations) | 78 |
+| NB-02..08 (the post-NB-00 template) | 44–62, **~52 average** |
+| **Built so far (9 notebooks)** | **601** |
+| Projected total for 16 | **~965** |
+
+So by cell count the series is **~62% built** (601 of ~965) while being 56% built by notebook
+count. The gap is NB-01: it alone is 16% of the projected total, and every remaining notebook
+is template-sized. Do not read that as "the hard half is done" — the remaining eight include
+the two cross-cutting notebooks (11, 12) and three applied problem types (13–15), which have
+less prior art in the repo to draw on than the algorithm notebooks did.
+
+Treat each as its own project with its own verification pass.
 
 ### Where the files live
 
@@ -51,10 +68,15 @@ Self-Prep/
 │   ├── decision_trees_zero_to_hero.ipynb
 │   ├── random_forest_zero_to_hero.ipynb
 │   ├── gradient_boosting_zero_to_hero.ipynb
-│   └── svm_zero_to_hero.ipynb
+│   ├── svm_zero_to_hero.ipynb
+│   ├── knn_zero_to_hero.ipynb
+│   └── naive_bayes_zero_to_hero.ipynb
 └── tools/
-    └── verify_notebook.py          <- the quality gate
+    ├── verify_notebook.py          <- the quality gate
+    └── check_links.py              <- relative-link checker (see 7)
 ```
+
+Nine of the sixteen exist. Add each new file to this tree when it lands.
 
 **Two READMEs, two audiences — keep them distinct:**
 
@@ -88,7 +110,9 @@ is still a coherent course rather than a set of gaps.
 
 Turn each section of [`ml_study_tracker_2_classical_ml.ipynb`](ml_study_tracker_2_classical_ml.ipynb)
 (a terse checklist tracker: 12–16 cells, 5–7 checklist items per topic) into a **standalone,
-runnable, zero-knowledge-to-job-ready notebook** of ~150 cells.
+runnable, zero-knowledge-to-job-ready notebook**. Target length is **~50 cells** since NB-00
+absorbed the shared workflow — the ~150-cell figure in the original plan applies only to NB-01,
+which was written before that split.
 
 **The audience:** someone who has never fitted a model, who needs to end up able to build,
 diagnose, tune and *defend* the model in an interview or a code review.
@@ -145,16 +169,39 @@ notebooks so a reader can jump between them.
 | **9** | **Reading the literature** — how to read a paper + the papers behind each section | 6 | ❌ unique |
 | — | Appendix: common errors, sanity checklist, where to go next | 1 | ✅ → NB-00 |
 
-**After NB-00 exists**, topic notebooks should drop Parts 2, 3, 5 and the Appendix down to a
-short "see Foundations" pointer, landing at roughly **100 cells** instead of 157.
+**After NB-00 exists**, topic notebooks drop Parts 2, 3, 5 and the Appendix down to a short
+"see Foundations" pointer. The original guess was ~100 cells; **measured across NB-02..08 the
+real figure is 44–62, averaging ~52.** Do not pad a notebook to hit a cell count — NB-04 is
+the shortest at 44 and is not the weakest.
+
+### The part numbering topic notebooks actually use
+
+The table above is **NB-01's** layout, kept because it explains what NB-00 absorbed. Every
+notebook from NB-02 onward uses this shorter numbering instead, and new notebooks should match
+it exactly:
+
+| Part | Content |
+|---|---|
+| — | Title, why-this-matters, contents table, one-paragraph summary |
+| **0** | Setup: conditional install cell + one master import cell |
+| **1** | **Theory from zero** — numbered steps, from scratch, checked against sklearn |
+| **2** | **Worked example** — one dataset, end to end |
+| **3** | **The topic's signature problem**, in depth |
+| **4** | **Tough questions** — ~12 with `<details>` answers + 3 coding challenges |
+| **5** | **Practice datasets** — 5, ordered by difficulty, each with a brief |
+| **6** | **Reading the literature** — the papers behind each section |
+| — | Appendix: topic-specific errors table, ship checklist, where to go next |
 
 ### Conventions that make them feel like one series
 
-- Part 8 dataset briefs always carry: **what it is / why this one / your brief (numbered) /
+(Part numbers below are the topic-notebook ones — 4, 5, 6 — not NB-01's 7, 8, 9.)
+
+- Part 5 dataset briefs always carry: **what it is / why this one / your brief (numbered) /
   a good result / the trap**.
-- Part 7 answers hide in `<details><summary>Answer</summary> ... </details>`.
-- Part 9 always has: how to read a paper → 5 starter papers → a "paper behind each section"
-  table with ✅ free / ❌ paywalled / 🔍 search-the-title markers.
+- Part 4 answers hide in `<details><summary>Answer</summary> ... </details>`.
+- Part 6 always has: 2–3 "start here" papers with a note on why → a "paper behind each
+  section" table with ✅ free / 🔍 search-the-title markers → an "if you read only one"
+  recommendation.
 - Prose voice: plain, direct, willing to say a model is mediocre. No hype.
 - Every table that reports a model's score also reports a **baseline** (`DummyRegressor` /
   `DummyClassifier`) on the same line or immediately above.
@@ -186,8 +233,10 @@ that looks fine and teaches something false.
    every section gets one.
 9. **Say what the method cannot do.** NB-01's worked example lands at R²=0.45 and says so
    plainly, including "nowhere near good enough for an individual clinical decision".
-10. **Notebooks ship with cleared outputs** unless deliberately decided otherwise — the
-    execution state must be internally consistent (outputs ⇔ `execution_count`).
+10. **Notebooks ship WITH outputs** (decided after NB-00/NB-01 — see §10), so a reader
+    browsing on GitHub sees the results that back the prose. Whichever state a notebook is in,
+    it must be internally consistent: a cell with outputs must carry an `execution_count`.
+    `verify_notebook.py` enforces the consistency, not the choice.
 
 ### ⚠️ The VSCode hazard
 
@@ -216,8 +265,28 @@ python -m venv <scratch>/venv
 # add per-notebook extras as needed: xgboost lightgbm statsmodels shap
 ```
 
-Versions the NB-01 verification ran against: numpy 2.5.2, pandas 3.0.5, scikit-learn 1.9.0.
+Versions every verification has run against: numpy 2.5.2, pandas 3.0.5, scikit-learn 1.9.0.
 Note `ndarray.ptp()` was **removed** in NumPy 2 — use `np.ptp(arr)`.
+
+**Datasets that download.** Most notebooks use bundled sklearn data, but NB-08 fetches
+20 Newsgroups (~14 MB) and several Part 5 briefs use `fetch_openml`. These cache under
+`~/scikit_learn_data`, so the first run of such a cell is slow and later runs are not. A fresh
+machine will need network access for the first verification pass.
+
+**Library gotchas already paid for** (do not rediscover these):
+
+| Gotcha | Where |
+|---|---|
+| `ndarray.ptp()` removed in NumPy 2 | NB-01 |
+| `make_column_selector(dtype_include=object)` raises `Pandas4Warning` | NB-00 |
+| `OneHotEncoder` sparse output breaks `transform_output="pandas"` | NB-00 |
+| `load_digits` emits a NumPy 2.5 `DeprecationWarning` from inside sklearn | NB-02, NB-07 |
+| `SVC(probability=True)` deprecated, removal in 1.11 | NB-06 |
+| `Nystroem`/`RBFSampler` default `gamma=1.0`, not `"scale"` | NB-06 |
+| `k > n_samples_fit` raises rather than degrading | NB-07 |
+| `MultinomialNB(alpha=0)` needs `force_alpha=True` **and** still warns | NB-08 |
+| `fetch_20newsgroups` **sorts** `categories` — index `target_names` | NB-08 |
+| Millisecond fit-time ratios are not reproducible; compute them at runtime | NB-06, NB-08 |
 
 ### Verify
 
@@ -226,18 +295,15 @@ python tools/verify_notebook.py ML-Zero-to-Hero/<nb>.ipynb            # structur
 python tools/verify_notebook.py ML-Zero-to-Hero/<nb>.ipynb --run --python <scratch>/venv/Scripts/python.exe
 
 # check every relative link still resolves after adding or moving a notebook
-python - <<'EOF'
-import json, io, glob, re, os
-base = "ML-Zero-to-Hero"
-for path in sorted(glob.glob(base + "/*.ipynb")):
-    nb = json.load(io.open(path, encoding="utf-8"))
-    for c in nb["cells"]:
-        for t in re.findall(r"\]\(([^)#]+\.(?:ipynb|md|py))\)", "".join(c["source"])):
-            ok = os.path.exists(os.path.normpath(os.path.join(base, t)))
-            if not ok:
-                print("CHECK", os.path.basename(path), "->", t)
-EOF
+python tools/check_links.py          # exits non-zero if any are broken
+
+# check which notebooks still ship without stored outputs (see 10)
+python -c "import io,json,glob,os; [print('%-50s %2d/%2d' % (os.path.basename(p), sum(1 for c in json.load(io.open(p,encoding='utf-8'))['cells'] if c['cell_type']=='code' and c.get('outputs')), sum(1 for c in json.load(io.open(p,encoding='utf-8'))['cells'] if c['cell_type']=='code'))) for p in sorted(glob.glob('ML-Zero-to-Hero/*.ipynb'))]"
 ```
+
+⚠️ The link checker used to be inlined here as a bash heredoc. It contained a regex full of
+backslashes — exactly what the gotcha below mangles — so it is a **script** now. Do not paste
+it back inline.
 
 Structure pass checks: cell ids, duplicate ids, syntax, stderr in outputs, local-path leaks,
 outputs/execution_count consistency, and edit-history references.
@@ -586,7 +652,69 @@ stated in a comment — there is nothing to fix on our side.
 
 ---
 
-### NB-08 — Naive Bayes ⬜
+### NB-08 — Naive Bayes ✅ COMPLETE
+61 cells (30 code). Verified: structure clean, all 30 cells run under warnings-as-errors,
+every printed number audited. **Passed the full verification on the first build.**
+
+**Structure as built:** Part 1 theory (Bayes' rule → classifier · **the naive assumption
+measured** · log space & underflow · smoothing · from scratch · the four variants · **why a
+false assumption still works** · the prior) → Part 2 20 Newsgroups worked example → **Part 3
+the probability problem** → Part 4 questions → Part 5 datasets → Part 6 papers.
+
+**Headline demonstrations** (verified numbers):
+
+- **The assumption measured failing:** within the hockey class, "goal"+"scored" co-occur
+  **6.03×** more than independence predicts; every pair tested exceeds 1.0.
+- **Underflow:** a product of 0.01s hits exactly 0.0 after **162 factors**. A 200-word document
+  has ~200.
+- **alpha=0:** **39.6%** of the log-probability table becomes −inf, accuracy collapses
+  0.94 → **0.6935**, log-loss infinite. (Needs `force_alpha=True` *and* a suppressed
+  RuntimeWarning — sklearn makes you ask twice.)
+- **From scratch == sklearn:** identical predictions, log-likelihood diff **0.00e+00**.
+- **Variants:** continuous data — GaussianNB 0.9385, MultinomialNB 0.8981, **BernoulliNB
+  0.6274** (binarises at 0, so all-positive features become all-ones).
+- **The centrepiece — duplicating every feature k times** adds no information: accuracy
+  0.9407 → 0.9393 and AUC 0.9839 → 0.9823 (untouched), while mean |log-odds| goes
+  **160.8 → 1608.1** (exactly linear in k) and log-loss **0.5265 → 1.3761**.
+- **Overconfidence:** on raw counts **30.1%** of documents score exactly 0.0 or 1.0 in float64;
+  log-odds range **−1459 to +12183**; mean |log-odds| rises 16 → 1355 with document length.
+- **Leakage:** metadata is worth **0.8349 → 0.6691** (~25% of the honest score).
+- **Prior deadness:** on raw counts a 999:1 prior shift flips only **6.8%** of predictions
+  (would need ~10^17:1 to move half); on TF-IDF a 9:1 shift flips **31.6%** and costs 26 points.
+
+**Findings that changed the prose** (result kept, prose rewritten to match):
+
+1. **TF-IDF LOSES to raw counts** (0.6691 vs 0.8103) — the opposite of the standard claim.
+   Root cause found and measured: `alpha` is an additive **pseudocount**, TF-IDF's median
+   column sum is **0.127**, so `alpha=1.0` is ~8× the evidence it is smoothing. At
+   `alpha=0.01` the two representations tie (0.8389 vs 0.8375). §2.3 was rewritten into a
+   demonstration of the alpha×vectorizer interaction, and **Q8 was rewritten from "why does
+   TF-IDF win" to "you changed the feature scale without changing alpha"**.
+2. **Brier score rates NB as BETTER calibrated than logistic regression** (0.0477 vs 0.0754)
+   while log-loss rates it far worse (0.5265 vs 0.3117). Brier is bounded; log-loss is not.
+   §3.1 and Q5 are built around this rather than around the textbook "NB is miscalibrated".
+3. **A second signature leak found in alt.atheism**, not just sci.med. Bob Beauchaine's .sig
+   (`bobbe`/`beauchaine`/`sank`/`queens`/`bronx`, a song lyric) is 100% precise for the class
+   **and appears in 9–10 test documents** — so unlike the sci.med signature (77 train docs,
+   **0 test docs**), that one is a genuine train/test leak. §2.6 now contrasts the two.
+4. **MultinomialNB beat the linear SVM in §2.5** (0.8375 vs 0.8149). Rather than claim a win,
+   §2.5 now says why the table is unfair — NB was tuned, the others were not, on features
+   chosen to suit NB — and names it as the standard way "our model wins" tables get built.
+5. **ComplementNB reaches 0.8119 in §3.5** against MultinomialNB's 0.6976 and LinearSVC's
+   0.8238, at ~1/12 the SVM's fit time — which changes the section's verdict from "NB is only
+   a baseline" to "ComplementNB is genuinely competitive on multiclass text".
+
+**Two bugs caught in my own demos during verification:**
+
+- `fetch_20newsgroups` **sorts** the `categories` list, so indexing your own list mislabels
+  every class. Caught when `rec.sport.hockey` came back with evidence words *god, jesus,
+  church*. Now taught explicitly in §2.2 with a deliberately unsorted list.
+- Millisecond-scale fit times are not reproducible (logistic regression measured 84×, 103× and
+  133× slower across three runs). All ratios in §3.5 are now computed at runtime and the prose
+  asserts only what survives that noise — the same correction NB-06 needed.
+
+**(original brief follows)**
+
 - **Unique theory:** Bayes' rule → the naive conditional-independence assumption; why it still
   ranks correctly while being badly calibrated; Multinomial vs Bernoulli vs Gaussian NB;
   Laplace smoothing; log-space turning products into a linear sum.
@@ -694,6 +822,48 @@ Cross-cutting — build after the model notebooks.
 ## 9. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-06 (NB-08)
+- **NB-08 Naive Bayes: COMPLETE.** 61 cells (30 code, 31 markdown). Verified: structure clean,
+  all 30 cells run under warnings-as-errors, every printed number audited. Passed the full
+  verification on the **first** build — the second notebook in the series to do so.
+- Built verification-first: every risky demo was run in the scratchpad *before* any generator
+  cell was written. That is what surfaced the TF-IDF and Brier findings early enough to shape
+  the notebook's structure rather than force a rewrite.
+- **Five prose claims were contradicted by measured output and rewritten** (detail in the NB-08
+  brief). The two that changed the notebook's shape:
+  - **TF-IDF scored 14 points WORSE than raw counts.** Chasing it down produced the best
+    section in the notebook: `alpha` is an additive pseudocount, TF-IDF column sums are ~0.13,
+    so the default `alpha=1.0` swamps the data. At `alpha=0.01` the gap disappears. Q8 was
+    rewritten from the textbook question to this one.
+  - **Brier score reported NB as better calibrated than logistic regression** while log-loss
+    reported it as twice as bad. §3.1 now teaches *which metric detects overconfidence* rather
+    than merely asserting NB is overconfident.
+- **A second leak found by reading the model's own evidence words** — alt.atheism is detected
+  by one poster's signature, and unlike the well-known sci.med one, it reaches the test set.
+- **Two bugs in my own verification code**, both now taught in the notebook: `fetch_20newsgroups`
+  sorts `categories` (caught when hockey's top words were *god, jesus, church*), and
+  millisecond fit-time ratios are not reproducible across runs.
+
+### 2026-09-06 (documentation refresh)
+- Audited this plan and the root README for content that had gone stale as the series grew,
+  rather than only bumping the NB-07 status. Five real problems found:
+  - **The file tree still ended at NB-06** — `knn_zero_to_hero.ipynb` was missing from it.
+  - **The “~150 cells each ≈ 2,300 total” projection was obsolete.** It predates NB-00.
+    Post-NB-00 topic notebooks measure 44–62 cells (~51 average), so the real projection is
+    **~948**, of which 540 are built. §2's per-notebook target was corrected the same way.
+  - **The link checker was inlined in §7 as a bash heredoc containing a backslash-heavy
+    regex** — which is exactly the mangling hazard documented in the subsection immediately
+    below it. Promoted to `tools/check_links.py` and the heredoc removed.
+  - **§10 still said “next up: NB-02”** and claimed the outputs question was settled.
+  - **The root README listed only the tracker notebooks**, omitting the four practical
+    notebooks the plan itself mines for material; tracker 4 was also out of order.
+- **Discrepancy worth recording:** the outputs convention is not being met. Only NB-00 (40/40
+  code cells) and NB-01 (74/77) carry stored outputs. **NB-02 through NB-07 carry none**, so
+  on GitHub they render as code with no results — which undermines the series' central claim
+  that every number is verified, for anyone browsing rather than running. Now tracked as an
+  open item in §10. They all pass `--run`; this needs a save, not a fix.
+- Added `tools/check_links.py` (37 links, 0 broken) and listed both tools in the root README.
 
 ### 2026-09-06 (NB-07)
 - **NB-07 K-Nearest Neighbors: COMPLETE.** 52 cells (24 code, 28 markdown). Verified:
@@ -905,10 +1075,17 @@ Append a dated entry every session. Newest first.
 
 ## 10. Open questions for the user
 
-- [x] ~~Build **NB-00 Foundations** first?~~ **Done 2026-09-06.** Next up: **NB-02 Logistic
-      Regression**.
-- [x] ~~Ship notebooks output-free?~~ **No** — NB-00 and NB-01 have been run and now carry
-      outputs. Run NB-02 too, then keep the convention: **ship with outputs**.
+- [x] ~~Build **NB-00 Foundations** first?~~ **Done 2026-09-06.** Through NB-08 as of the
+      latest session; next up is **NB-09 PCA & Dimensionality Reduction**.
+- [x] ~~Ship notebooks output-free?~~ **No** — the convention is **ship with outputs**.
+- [ ] **Two notebooks still ship without outputs.** As of the NB-08 session the position is:
+      NB-00 40/40, NB-01 74/77, NB-02 32/35, NB-04 23/26, NB-05 22/25, NB-06 25/28, NB-07
+      24/24 — all good. **NB-03 (0/28) and NB-08 (0/30) carry none.** On GitHub those two
+      render as code with no results, which undercuts the "every number is verified" claim for
+      a reader who is only browsing. Both pass `--run`, so each needs one clean top-to-bottom
+      run in VSCode and a save — a save, not a fix.
+      (Counts below the cell total are normal: a cell that runs and prints nothing stores no
+      output. Re-check with the snippet in §7 rather than assuming.)
 - [ ] Restore the stripped outputs in `ml_study_tracker_2_classical_ml.ipynb` from git?
 - [ ] Is `catboost` / `shap` / `imbalanced-learn` acceptable as extra dependencies, or should
       every notebook stay within numpy/pandas/matplotlib/scipy/sklearn?
