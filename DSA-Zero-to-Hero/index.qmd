@@ -1,18 +1,30 @@
 ---
 title: "DSA: Zero to Hero"
-subtitle: "23 notebooks. The first one is built; the other 22 are planned."
+subtitle: "23 notebooks. Two are built; the other 21 are planned."
 toc: true
 ---
 
 ::: {.callout-note}
-## 1 of 23 built
+## 3 of 23 built
 
 **[NB-00 Complexity & Amortised Analysis](complexity_zero_to_hero.ipynb)** is complete and
 verified. It is the one to read first: it builds `dsa_toolkit.py`, the harness every other
 notebook imports, and establishes the habit the series runs on — *a complexity is something
 you measure, not something you assert.*
 
-The remaining 22 are planned. The [build plan](plan.qmd) is the working document and is
+**[NB-01 Arrays & Dynamic Arrays](arrays_zero_to_hero.ipynb)**
+follows it, and is where the series' habit of measuring rather than asserting starts paying:
+it prices the dynamic-array growth factor as a trade, and measures cache locality costing
+more than most algorithmic wins.
+
+**[NB-02 Strings & String Algorithms](strings_zero_to_hero.ipynb)** takes that habit and turns
+it on a piece of folklore. Everyone knows `s += chunk` in a loop is quadratic and that CPython
+optimises it away. Measuring it finds the optimisation fails on *two* independent axes — one
+extra reference, and, separately, mere size — so the same function is exactly linear under a
+megabyte and exactly quadratic above it. The notebook also builds KMP, the Z-algorithm and
+Rabin-Karp, and shows what happens when you skip Rabin-Karp's verification step.
+
+The remaining 20 are planned. The [build plan](plan.qmd) is the working document and is
 published as-is, including its open questions.
 :::
 
@@ -53,8 +65,9 @@ correctness and cost are *decidable* — so they get tested rather than asserted
 **Foundations** — [00 Complexity, Amortised Analysis & the Measurement
 Harness](complexity_zero_to_hero.ipynb) ✅
 
-**Linear structures** — 01 Arrays & Dynamic Arrays · 02 Strings & String Algorithms ·
-03 Hashing & Hash Tables · 04 Linked Lists · 05 Stacks, Queues & Deques
+**Linear structures** — [01 Arrays & Dynamic Arrays](arrays_zero_to_hero.ipynb) ✅ ·
+[02 Strings & String Algorithms](strings_zero_to_hero.ipynb) ✅ · 03 Hashing & Hash Tables · 04 Linked Lists ·
+05 Stacks, Queues & Deques
 
 **Trees** — 06 Trees & Traversals · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
 09 Heaps & Priority Queues

@@ -37,7 +37,7 @@ A few of the results it argues for:
 ::: {.g-col-12 .g-col-md-6}
 ### [DSA: Zero to Hero](DSA-Zero-to-Hero/index.qmd)
 
-**23 notebooks · 1 built · in progress**
+**23 notebooks · 3 built · in progress**
 
 The same treatment for data structures and algorithms, with a stricter quality bar — because in
 this domain correctness and cost are decidable, so they get tested rather than asserted:
@@ -48,8 +48,12 @@ this domain correctness and cost are decidable, so they get tested rather than a
 - Every invariant asserted in code after every operation.
 
 [**NB-00 Complexity & Amortised Analysis**](DSA-Zero-to-Hero/complexity_zero_to_hero.ipynb)
-is complete: it builds the harness the other 22 notebooks import, and finds a measurement
-whose verdict changes between runs.
+builds the harness the other 22 notebooks import, and finds a measurement whose verdict changes
+between runs. [**NB-01 Arrays**](DSA-Zero-to-Hero/arrays_zero_to_hero.ipynb) prices the dynamic
+array's growth factor as a trade. [**NB-02 Strings**](DSA-Zero-to-Hero/strings_zero_to_hero.ipynb)
+takes the best-known piece of string folklore and finds it wrong in a second way nobody mentions:
+CPython's `+=` optimisation fails on size as well as on aliasing, so the same loop is exactly
+linear under a megabyte and exactly quadratic above it.
 
 [Start with NB-00 →](DSA-Zero-to-Hero/complexity_zero_to_hero.ipynb) ·
 [Read the plan →](DSA-Zero-to-Hero/plan.qmd)

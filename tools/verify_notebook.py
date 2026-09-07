@@ -120,6 +120,12 @@ def build_runner(nb, path, notebook_dir=None):
 
 
 def main():
+    # Never let reporting a failure become a failure of its own.
+    try:
+        sys.stdout.reconfigure(errors="backslashreplace")
+    except (AttributeError, ValueError):
+        pass
+
     ap = argparse.ArgumentParser()
     ap.add_argument("notebook")
     ap.add_argument("--run", action="store_true", help="execute every code cell in order")
@@ -148,8 +154,13 @@ def main():
         workdir = os.path.dirname(os.path.abspath(args.notebook)) or None
         total = build_runner(nb, tmp, workdir)
         print("  EXECUTING %d code cells with warnings-as-errors ..." % total)
+        # Force UTF-8 on the child's stdout. Otherwise a notebook that prints
+        # non-Latin-1 text (NB-02 prints emoji and a G clef) dies in the child's
+        # own encoder on Windows, which looks exactly like a failing cell.
+        env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
         proc = subprocess.run([args.python, tmp], capture_output=True, text=True,
-                              encoding="utf-8", errors="replace", cwd=workdir)
+                              encoding="utf-8", errors="replace", cwd=workdir,
+                              env=env)
         out = (proc.stdout or "") + (proc.stderr or "")
         if proc.returncode == 0 and "ALL %d CODE CELLS RAN CLEAN" % total in out:
             print("  EXECUTION: clean")

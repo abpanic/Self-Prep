@@ -109,8 +109,8 @@ the owner to close the file first.
 | # | Notebook | File | Status | Cells | Verified |
 |---|---|---|---|---|---|
 | 00 | **Complexity, Amortised Analysis & the Measurement Harness** | `complexity_zero_to_hero.ipynb` | ✅ | 54 (28 code) | ✅ struct + run |
-| 01 | **Arrays & Dynamic Arrays** | `arrays_zero_to_hero.ipynb` | ⬜ | — | — |
-| 02 | **Strings & String Algorithms** | `strings_zero_to_hero.ipynb` | ⬜ | — | — |
+| 01 | **Arrays & Dynamic Arrays** | `arrays_zero_to_hero.ipynb` | ✅ | 43 (21 code) | ✅ struct + run |
+| 02 | **Strings & String Algorithms** | `strings_zero_to_hero.ipynb` | ✅ | 39 (18 code) | ✅ struct + run |
 | 03 | **Hashing & Hash Tables** | `hashing_zero_to_hero.ipynb` | ⬜ | — | — |
 | 04 | **Linked Lists** | `linked_lists_zero_to_hero.ipynb` | ⬜ | — | — |
 | 05 | **Stacks, Queues & Deques** | `stacks_queues_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**1 of 23 done.**
+**3 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -414,7 +414,71 @@ enough. Regression-checked against an ML notebook.
 - **Java angle:** JIT warm-up, why the first run is a lie, and how `run_java` handles it.
 - **Reading:** CLRS ch. 2–4, 17. Bentley, *Programming Pearls*.
 
-### NB-01 — Arrays & Dynamic Arrays ⬜
+### NB-01 — Arrays & Dynamic Arrays ✅ COMPLETE
+43 cells (21 code). Verified: structure clean, all 21 cells run under warnings-as-errors with
+Java compiled at `-Xlint:all -Werror`, every printed number audited.
+
+**Structure as built:** Part 1 theory (contiguity and the address formula · what contiguity costs
+· **the dynamic array from scratch, cross-checked against Java** · **memory: pointers, machine
+ints and the boxing tax**) → Part 2 the techniques that *fall out of* contiguity (prefix sums ·
+difference arrays · two pointers · sliding window · the quadratic accident) → **Part 3 cache
+locality** → Part 4 questions → Part 5 practice → Part 6 reading.
+
+**Headline demonstrations.** These are timings and move between machines, so the prose states
+magnitudes and lets the cells print the figures:
+
+- **The growth factor is a priced decision.** Sweeping it over 100,000 appends: 1.125x copies
+  **8.24 elements per append** and wastes 2.9%; 2.0x copies **1.31** and wastes 31.1%; 4.0x copies
+  **0.87** and holds **162.1% more memory than it needs**. Every row is amortised O(1) — the
+  constant is what you are choosing.
+- **Memory and speed pull in opposite directions.** A list of 2,000,000 ints costs **36.0
+  bytes/element**; `array.array('i')` costs **4.2** — an **8.5x** saving — and is **2.6x SLOWER**
+  to sum, because every access boxes a machine int into a Python object. Stated as a trade, not a
+  win.
+- **Java's boxing tax:** `Integer[]` sums close to **3x** slower than `int[]`, and costs ~6x the
+  memory.
+- **Cache locality is the signature result.** Same Java array, same operation count, only the loop
+  order differs: **8.4x** at 4000x4000.
+- **AoS vs SoA:** reading one field of 20,000,000 records is **~2.4x** slower from `Particle[]`
+  than from a parallel `double[]`.
+- **Difference arrays:** **over 400x** faster than the naive version at 400 range updates, and
+  flat in the number of updates where naive is linear.
+- **The quadratic accident:** `list.insert(0, x)` in a loop measures a clean **O(n^2)**, and the
+  linear alternative is still faster in absolute terms at eighty times the size.
+- **`System.arraycopy`** is about **20x** faster than a hand-written copy loop at n=1,000 and
+  roughly a **wash at 20,000,000**, where both are memory-bandwidth-bound. The honest version of
+  "intrinsics are faster".
+- **Cross-language:** the Python and Java dynamic arrays agree exactly on (resizes, elements
+  copied, final capacity) across 25 random sizes — so the amortised argument verified on one
+  transfers to the other.
+
+**Four demos were corrected against their own output**, per quality-bar rules 2 and 3:
+
+1. **AoS vs SoA does not work in Python.** It measured 1.15x, because a list of objects and a list
+   of ints are *both* pointer arrays — there is no locality difference to find. Moved to Java,
+   where objects genuinely live elsewhere, and it shows ~2.4x.
+2. **My memory comparison was meaningless as first written.** `getsizeof(list)` against
+   `getsizeof(array.array)` reported 8.23 vs 8.24 bytes/element — an 8.5x difference measured as
+   none — because it counts the pointer array and omits the int objects. Fixed to deep-size the
+   list, and the notebook now warns about exactly this.
+3. **"The complexity actually differs" for prefix/difference arrays was wrong.** With the update
+   count held fixed, naive is O(u*n) and difference is O(u+n), and *both* are linear in n. Fixed by
+   sweeping u instead, which shows naive linear and difference flat.
+4. **The cache penalty is not monotonic in array size.** Measured 1.82x at 1000², **1.11x at
+   2000²**, 8.43x at 4000². The middle array is still substantially cache-resident on this
+   machine, so §3.1 now says the cliff is a property of the machine rather than a smooth trend,
+   and points at Practice 7.
+
+**A fifth correction, and it is NB-00 §3.2 recurring.** Three cells claimed O(n) and the fitter
+reported O(n log n): the dynamic-array append sweep, the naive range-update sweep, and the linear
+half of the quadratic-accident demo. All three are genuinely linear; at these sizes the two
+classes are within noise. Rather than inflate the sizes until the notebook is slow, the claims
+were dropped and the prose now tells the reader to read the **ratio** column and explains why the
+label is unreliable here. That is the third notebook in which this has come up, which is itself
+worth knowing.
+
+**(original brief follows)**
+
 - **Unique theory:** contiguous memory and O(1) indexing; the growth-factor argument and
   **amortised O(1) append proved three ways**; why 2x (Java `ArrayList`) versus ~1.125x (CPython
   `list`) and what that trades; insert/delete in the middle.
@@ -425,16 +489,60 @@ enough. Regression-checked against an ML notebook.
 - **Java angle:** `int[]` vs `Integer[]` boxing, `ArrayList` internals, `System.arraycopy`.
 - **Bad at:** insertion, unknown final size, sparse data.
 
-### NB-02 — Strings & String Algorithms ⬜
-- **Unique theory:** immutability and its consequences; the **O(n²) concatenation trap**, measured,
-  and why CPython sometimes hides it; string builders; character encodings and why `len()` can
-  surprise you.
-- **Must cover:** naive matching, **KMP with the prefix function derived**, Z-algorithm,
-  Rabin-Karp with rolling hashes and its collision risk.
-- **Signature difficulty:** the gap between the O(nm) worst case and the near-linear average that
-  makes naive matching survive in practice; construct the adversarial input that breaks it.
-- **Java angle:** `String` vs `StringBuilder` vs `StringBuffer`, the interning pool, `char` vs
-  code point.
+### NB-02 — Strings & String Algorithms ✅
+**39 cells (18 code, 21 markdown). Structure clean; all 18 cells run under warnings-as-errors;
+Java compiled at `-Xlint:all -Werror`; every number audited against printed output.**
+
+- **Unique theory:** immutability and its consequences; the concatenation trap measured on **two
+  axes**; string builders; encodings and why `len()` cannot mean what people want it to.
+- **Covered:** naive matching, KMP with the prefix function derived and its amortised proof,
+  Z-algorithm, Rabin-Karp with the rolling hash and the verification step.
+- **Signature difficulty (§3):** why naive matching survives in practice, measured rather than
+  asserted.
+- **Java angle:** `String +=` vs `StringBuilder`, UTF-16 `length()` vs `codePointCount`, the
+  interning pool and why `==` is a bug that passes its tests.
+
+**The finding that made the notebook.** The `s += chunk` optimisation fails on *two* independent
+axes, and only one of them is folklore:
+
+| Regime | Fit | Relative error |
+|---|---|---|
+| `+=`, refcount 1, result **50 KB → 400 KB** | **O(n)** | 0.005 |
+| `+=`, refcount 1, result **2 MB → 16 MB** | **O(n²)** | 0.02 |
+| `+=`, one extra reference held, any size | **O(n²)** | 0.06 |
+| `"".join(parts)`, timed alone | **O(n)** | 0.005 |
+
+The **size cliff** was not planned. It was found because the original 20k–160k table produced a
+reproducible 5× ratio in its last row instead of the expected 2×, and again — more subtly — when
+the linear table's 800 KB row drifted to 2.5. The linear range now stops at a 400 KB result for
+that reason, and the notebook says so rather than hiding it. `realloc` cannot extend a
+multi-megabyte block in place, so the quadratic returns with no second reference anywhere. The
+same function is exactly linear and exactly quadratic depending only on how much you build.
+
+**A methodology error caught in the same section.** `''.join(parts)` measured as O(n log n) and the
+harness rejected the O(n) claim — correctly, because the timed function *included the loop that
+filled the list*. Timing the join alone via `setup=` gives O(n) with relative error 0.005. The
+lesson is now in the notebook: measure the thing you are claiming about, not the thing wrapped
+around it.
+
+**Verified numbers cited in prose:**
+- Naive comparisons per character of text: random binary **2.00**, English-like **1.00**,
+  adversarial **498.50**. The realistic figures do not depend on pattern length; the adversarial
+  one does.
+- Naive **O(n²)** (err 0.10) vs KMP **O(n)** on the same adversarial family; head-to-head speed-up
+  **~330× at 8,000, ~670× at 16,000, ~1,250× at 32,000** — growing, hence a complexity difference.
+- Java `String +=` vs `StringBuilder`: **~76× / ~153× / ~319×** at n = 10k/20k/40k. Timing-derived
+  figures like these are quoted as ranges in the notebook's prose, never as exact values.
+- Unicode `len()` / UTF-8 bytes / UTF-16 units — ascii 4/4/4; precomposed é 4/5/4; decomposed
+  5/6/5; G clef **1**/4/**2**; family emoji **5**/18/**8**; flag 2/8/4.
+- Java: `clef.length()=2 codePointCount=1`; precomposed vs decomposed `equals=false`;
+  `a==b true | a==c false | a==c.intern() true`.
+- Rabin-Karp false positives searching 20,000 chars of a–h for `"hello!"` (which cannot occur):
+  mod 101 → **195**, mod 1009 → **20**, mod 100003 → 0, mod 2⁶¹−1 → 0. **Without the verification
+  step, mod 101 reports 195 matches for a pattern that never occurs.**
+- Differential testing: naive 5,009 cases; prefix_function 4,007; KMP 6,009; z_function 5,006;
+  Z-search 5,009; Rabin-Karp 4,009 — all agree with brute force.
+
 - **Bad at:** Unicode-correct operations, which almost every implementation gets wrong.
 
 ### NB-03 — Hashing & Hash Tables ⬜
@@ -700,6 +808,66 @@ enough. Regression-checked against an ML notebook.
 ## 11. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-08 (NB-02)
+- **NB-02 Strings & String Algorithms: COMPLETE.** 39 cells (18 code, 21 markdown). Structure
+  clean, all 18 cells run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number
+  audited against printed output. **3 of 23.**
+- **The `NOT SEPARABLE` verdict predicted in the NB-01 entry is now implemented** in
+  `growth_table`, and it fired twice in NB-02 (the Z-algorithm and KMP growth tables) exactly
+  where it should. That closes a problem that had recurred in four sections across three
+  notebooks: O(n) and O(n log n) are not distinguishable by timing over an 8× range of sizes, and
+  the harness now says so instead of forcing a wrong pick. Verified it still rejects a genuinely
+  wrong claim.
+- **The size cliff in CPython's `+=` was an unplanned finding** and became the best thing in the
+  notebook. Detail in the NB-02 brief. It came from refusing to accept a table whose last ratio
+  was 5× when the prose said "near-linear" — the ratio was reproducible across trials, so it was
+  real, and chasing it turned one cliff into two.
+- **I had the join measurement wrong, not the code.** `''.join` fitted O(n log n) and the harness
+  rejected my O(n) claim; the cause was that the timed function included the list-building loop.
+  Timing the join alone with `setup=` gives err 0.005. The harness catching my own methodology
+  error is the second time this has happened (NB-01's `getsizeof`), and both times it was worth
+  more than the section it interrupted.
+- **`verify_notebook.py` needed a UTF-8 fix.** NB-02 prints a G clef and emoji; on Windows the
+  child process encoded stdout as cp1252 and died in its own encoder, which presented as a
+  failing cell. The runner now forces `PYTHONIOENCODING=utf-8`/`PYTHONUTF8=1` on the child, and
+  the verifier reconfigures its own stdout with `backslashreplace` so that reporting a failure
+  can never itself fail. NB-00 and NB-01 re-verified clean afterwards.
+- **Prose that cites timings is now written as ranges, not exact figures.** Timing-derived numbers
+  move run to run, so exact quotes go stale the moment the notebook is re-executed; deterministic
+  numbers (comparison counts, stress counts, Unicode lengths, collision counts) are still quoted
+  exactly.
+- **Stored-outputs backlog: closed.** NB-00 (46 outputs), NB-01 (44) and NB-02 (39) were executed
+  with `nbclient` rather than by hand in VSCode, so this no longer needs a manual Run All. The
+  script lives in the scratchpad; it runs each notebook from its own directory, drops every
+  `stderr` stream (they carry environment paths) and preserves the file's newline style. All three
+  re-verify structure-clean afterwards and the output scan finds no leaked absolute paths.
+- **Next:** NB-03 Hashing & Hash Tables, which picks up §2.4's rolling hash and its adversarial
+  worst case as a topic in its own right.
+
+### 2026-09-08 (NB-01)
+- **NB-01 Arrays & Dynamic Arrays: COMPLETE.** 43 cells (21 code, 22 markdown). Structure clean,
+  all 21 cells run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number audited.
+  **2 of 23.**
+- **Four demos failed to demonstrate their lesson and were rebuilt** (details in the brief). The
+  most useful correction was my own measurement being wrong rather than the code: comparing
+  `getsizeof(list)` with `getsizeof(array.array)` reported an 8.5x memory difference as no
+  difference at all, because it silently omits the int objects the list points at.
+- **The honest finding worth carrying forward:** `array.array` saves 8.5x memory *and* is 2.6x
+  slower to sum from Python. The compact representation is not a free win, and the notebook says
+  so rather than selling it.
+- **NB-00 §3.2 recurred a third time.** Three genuinely-linear cells fitted as O(n log n). The
+  claims were dropped in favour of reading the ratio column. If this happens again in NB-02,
+  consider making `growth_table` report "O(n) or O(n log n), not separable at these sizes" as a
+  first-class verdict rather than picking one.
+- **The scratchpad venv did not survive the session boundary**, exactly as §2 warns. Rebuilt with
+  matplotlib only — DSA needs nothing else, and `verify_notebook.py`'s runner imports matplotlib
+  unconditionally. Note `python -m venv` over a partially-deleted venv directory produced a broken
+  pip; creating a fresh directory fixed it.
+- **The stored-outputs backlog is closed for everything except NB-01.** All 16 ML notebooks and
+  NB-00 now carry outputs. NB-01 needs one Run All + save.
+- **Next:** NB-02 Strings & String Algorithms, which picks up §2.4's quadratic accident in its
+  most famous form.
 
 ### 2026-09-07 (NB-00) — first notebook complete
 - **NB-00 Complexity: COMPLETE.** 54 cells (28 code, 26 markdown). Structure clean, all 28 cells

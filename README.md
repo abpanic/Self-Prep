@@ -116,6 +116,30 @@ and fed material into it.
 | `Practical-ML.ipynb` | Earlier mixed practical notebook |
 | `practicals/archive/` | Superseded versions (v1–v3), kept for reference |
 
+### DSA: Zero to Hero — in progress
+
+**Read it online: <https://self-prep-seven.vercel.app>**
+
+The same treatment applied to data structures and algorithms, in
+**[`DSA-Zero-to-Hero/`](DSA-Zero-to-Hero/)** — with a stricter quality bar, because here
+correctness and cost are decidable and so get tested rather than asserted. Every implementation
+is stress-tested against a brute-force reference, **Python and Java are written side by side**
+and cross-checked on identical inputs, every complexity is *measured* at doubling sizes, and
+every invariant is asserted in code.
+
+**3 of 23 notebooks complete.** Read them in order; each assumes the ones above it.
+
+| # | Notebook | Topic |
+|---|---|---|
+| 00 | [`complexity_zero_to_hero.ipynb`](DSA-Zero-to-Hero/complexity_zero_to_hero.ipynb) | Big-O/Ω/Θ, the cost model and where it lies, amortised analysis three ways, the Master theorem verified by counting — and it builds `dsa_toolkit.py`, the harness the rest import |
+| 01 | [`arrays_zero_to_hero.ipynb`](DSA-Zero-to-Hero/arrays_zero_to_hero.ipynb) | Contiguity and the address formula, the dynamic array from scratch in both languages, the growth factor priced as a trade, the boxing tax, cache locality measured at 8× |
+| 02 | [`strings_zero_to_hero.ipynb`](DSA-Zero-to-Hero/strings_zero_to_hero.ipynb) | Immutability and what it costs, the concatenation trap measured on two axes, KMP and the Z-algorithm, Rabin-Karp and the verification step people forget, and why `len()` cannot tell you how many characters there are |
+
+**Start with 00 whatever you are after.** It establishes the habit the whole series runs on:
+*a complexity is something you measure, not something you assert.* The
+[build plan](DSA-Zero-to-Hero/DSA_ZERO_TO_HERO_PLAN.md) holds the full 23-notebook roster, the
+quality bar, per-notebook briefs and a dated status log.
+
 ### Everything else under `DSA-Zero-to-Hero/`
 
 Mirrors the ML folder: the series above, plus the material it is being built from.
@@ -123,6 +147,7 @@ Mirrors the ML folder: the series above, plus the material it is being built fro
 ```
 DSA-Zero-to-Hero/
 ├── DSA_ZERO_TO_HERO_PLAN.md    <- roster, quality bar, per-notebook briefs, status log
+├── dsa_toolkit.py              <- the shared harness every notebook imports
 ├── index.qmd, plan.qmd         <- the site pages
 └── trackers/                   <- study checklists, superseded by the series as it lands
     └── archive/                <- the original combined tracker

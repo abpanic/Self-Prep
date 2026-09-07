@@ -254,6 +254,13 @@ _MODELS = [
 ]
 
 
+# Two candidate fits closer than this ratio in relative error are treated as
+# indistinguishable by growth_table. 1.3 was chosen because O(n) and O(n log n)
+# over an 8x range of sizes land around 1.0-1.2 apart on noisy timings, while a
+# genuinely wrong candidate (O(n^2) against O(n log n), say) is off by 10x or more.
+SEPARABLE_MARGIN = 1.3
+
+
 def fit_complexity(sizes, times):
     """Which complexity class best explains these timings?
 
@@ -295,10 +302,28 @@ def growth_table(rows, claim=None, fit=True):
     runner, err2 = ranked[1]
     print()
     print("best fit: %s (relative error %.3f); next: %s (%.3f)" % (best, err, runner, err2))
+
+    # When the top two are within a whisker of each other the experiment simply
+    # cannot separate them, and naming a winner would be false precision. This
+    # happens constantly for O(n) vs O(n log n) over a narrow range of sizes --
+    # see NB-00 section 3.2, which is about exactly this.
+    separable = err2 > err * SEPARABLE_MARGIN
+    if not separable:
+        print("NOT SEPARABLE: %s and %s fit these timings about equally well."
+              % (best, runner))
+        print("  Read the ratio column instead, and widen the range of sizes or")
+        print("  count operations rather than timing them (NB-00 1.7) if you need")
+        print("  to settle it.")
+
     if claim:
-        verdict = "MATCHES the claim" if best == claim else "does NOT match the claim"
-        print("claimed %s -> measurement %s" % (claim, verdict))
-        if best != claim:
+        if best == claim:
+            print("claimed %s -> measurement MATCHES the claim" % claim)
+        elif not separable and runner == claim:
+            print("claimed %s -> CONSISTENT with the measurement, which cannot"
+                  % claim)
+            print("  distinguish it from %s here." % best)
+        else:
+            print("claimed %s -> measurement does NOT match the claim" % claim)
             print("  Do not paper over this. Either the claim is wrong, the input never")
             print("  reaches the worst case, or constant factors dominate at these sizes.")
     return ranked
