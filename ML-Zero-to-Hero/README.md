@@ -60,17 +60,17 @@ These reference the models above, so they land better once those exist.
 | # | Notebook | What you get | Status |
 |---|---|---|---|
 | **11** | [`imbalanced_classification_zero_to_hero.ipynb`](imbalanced_classification_zero_to_hero.ipynb) | PR-AUC vs ROC-AUC, SMOTE built from scratch and its failure modes, **the resampling leak that fabricates 0.83 ROC-AUC from noise**, and why threshold tuning beats all of it | ✅ |
-| **12** | `explainable_ai_zero_to_hero.ipynb` | Partial dependence, SHAP, LIME — and why the methods disagree | ⬜ |
+| **12** | [`explainable_ai_zero_to_hero.ipynb`](explainable_ai_zero_to_hero.ipynb) | Permutation importance, PDP/ICE, **SHAP with its additivity verified**, LIME's instability measured — **how far the methods disagree**, and whether you needed the black box at all | ✅ |
 
 ### Applied problem types
 
 | # | Notebook | What you get | Status |
 |---|---|---|---|
-| **13** | `time_series_zero_to_hero.ipynb` | Supervised framing, lag features, why a random split is leakage, baselines you must beat | ⬜ |
-| **14** | `recommender_systems_zero_to_hero.ipynb` | Collaborative filtering, matrix factorisation, ranking metrics, cold start | ⬜ |
-| **15** | `anomaly_detection_zero_to_hero.ipynb` | Isolation Forest, LOF, One-Class SVM, and evaluating without labels | ⬜ |
+| **13** | [`time_series_zero_to_hero.ipynb`](time_series_zero_to_hero.ipynb) | Lag features and the supervised framing, **why a random split is leakage** (measured), walk-forward validation, the baselines you must beat, and **why trees cannot forecast a trend** | ✅ |
+| **14** | [`recommender_systems_zero_to_hero.ipynb`](recommender_systems_zero_to_hero.ipynb) | Item-item CF and **ALS written from scratch**, **why RMSE ranks the models backwards**, implicit feedback, cold start — and **proof that the popularity baseline only wins because of how the data was collected** | ✅ |
+| **15** | [`anomaly_detection_zero_to_hero.ipynb`](anomaly_detection_zero_to_hero.ipynb) | Isolation Forest and LOF **built from scratch**, `contamination` shown to be a threshold rather than a model, precision@k as the metric a team can act on — and **why LOF scores below random on real fraud**, with the fix | ✅ |
 
-**Progress: 12 of 16 complete.**
+**Progress: 16 of 16 — the series is complete.**
 
 ---
 
@@ -85,6 +85,8 @@ Not everyone should read all sixteen in order.
 | **Working on a real tabular project** | 00 for the workflow → 04 and 05 for the models that will actually win → 11 if your classes are imbalanced |
 | **Told to build something interpretable** | 01, 02, 03 — then 12 for the argument about whether "explaining" a black box is good enough |
 | **Coming from deep learning** | 00 → 05. Tabular data is still tree country, and Part 6 of NB-04 has the papers on why |
+| **Building a recommender or anything that ranks** | 09 for the factorisation idea → 07 for the neighbourhood idea → **14**, whose Part 3 is really about evaluation and applies well beyond recommendation |
+| **Hunting rare events** | 11 if you have labels, **15** if you do not — and 15 §2.3 measures how much that difference is worth |
 
 ---
 
@@ -99,7 +101,7 @@ Same shape every time, so you always know where to look:
 | **2** | **Worked example** — one dataset, end to end, nothing skipped |
 | **3** | The topic's signature problem, in depth |
 | **4** | **Tough questions** — ~12 with hidden answers, plus 3 coding challenges |
-| **5** | **Practice datasets** — 5 real ones, ordered by difficulty, each with a brief and the trap it sets |
+| **5** | **Practice datasets** — 5, ordered by difficulty, each with a brief and the trap it sets. Real data except in NB-14, where MovieLens is currently undownloadable and §1.2 explains what replaced it |
 | **6** | **Reading the literature** — two or three papers worth starting with, a table mapping every section to its source, and one "if you read only one" pick |
 | — | Appendix — errors specific to that model, and a pre-ship checklist |
 
@@ -149,5 +151,5 @@ most instructive parts of the notebook, and they are flagged where they occur.
 
 ---
 
-The full plan, quality bar, per-notebook briefs and status log live in
-[`../ZERO_TO_HERO_PLAN.md`](../ZERO_TO_HERO_PLAN.md).
+The repository root, [`../README.md`](../README.md), lists this series alongside the
+other notebook collections here.
