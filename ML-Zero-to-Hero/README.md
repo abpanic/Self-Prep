@@ -1,5 +1,7 @@
 # ML: Zero to Hero
 
+**Read it online: <https://self-prep-seven.vercel.app/ML-Zero-to-Hero/>**
+
 A course in notebook form. Each file takes one machine-learning topic from *"I have never
 fitted a model"* to *"I can build it, break it, diagnose it and defend it in an interview"*.
 

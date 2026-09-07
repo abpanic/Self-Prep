@@ -90,9 +90,14 @@ def check_structure(nb):
     return problems
 
 
-def build_runner(nb, path):
+def build_runner(nb, path, notebook_dir=None):
     """Write every code cell, in order, into one executable script."""
-    lines = [
+    lines = []
+    if notebook_dir:
+        # Jupyter puts the notebook's own directory on sys.path; do the same,
+        # so a notebook can import a module sitting beside it (dsa_toolkit.py).
+        lines += ["import sys", "sys.path.insert(0, %r)" % notebook_dir]
+    lines += [
         "import matplotlib",
         "matplotlib.use('Agg')",
         "import matplotlib.pyplot as _plt",
@@ -139,12 +144,10 @@ def main():
 
     if args.run:
         tmp = os.path.join(tempfile.gettempdir(), "_verify_run.py")
-        total = build_runner(nb, tmp)
-        print("  EXECUTING %d code cells with warnings-as-errors ..." % total)
-        # Run from the notebook's own directory, which is what Jupyter does. Without
-        # this a notebook that imports a module sitting beside it (e.g. DSA-Zero-to-
-        # Hero/dsa_toolkit.py) passes in Jupyter and fails here, for no real reason.
+        # Run from the notebook's own directory, which is what Jupyter does.
         workdir = os.path.dirname(os.path.abspath(args.notebook)) or None
+        total = build_runner(nb, tmp, workdir)
+        print("  EXECUTING %d code cells with warnings-as-errors ..." % total)
         proc = subprocess.run([args.python, tmp], capture_output=True, text=True,
                               encoding="utf-8", errors="replace", cwd=workdir)
         out = (proc.stdout or "") + (proc.stderr or "")

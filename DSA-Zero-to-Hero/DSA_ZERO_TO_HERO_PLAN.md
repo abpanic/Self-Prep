@@ -108,7 +108,7 @@ the owner to close the file first.
 
 | # | Notebook | File | Status | Cells | Verified |
 |---|---|---|---|---|---|
-| 00 | **Complexity, Amortised Analysis & the Measurement Harness** | `complexity_zero_to_hero.ipynb` | ⬜ | — | — |
+| 00 | **Complexity, Amortised Analysis & the Measurement Harness** | `complexity_zero_to_hero.ipynb` | ✅ | 54 (28 code) | ✅ struct + run |
 | 01 | **Arrays & Dynamic Arrays** | `arrays_zero_to_hero.ipynb` | ⬜ | — | — |
 | 02 | **Strings & String Algorithms** | `strings_zero_to_hero.ipynb` | ⬜ | — | — |
 | 03 | **Hashing & Hash Tables** | `hashing_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**0 of 23 done.**
+**1 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -343,7 +343,64 @@ Each brief is a starting point, not a specification. When a notebook is finished
 brief with what was actually built**, including the verified headline numbers and anything that
 had to be corrected — that record is what makes this file useful to a session with no context.
 
-### NB-00 — Complexity, Amortised Analysis & the Measurement Harness ⬜
+### NB-00 — Complexity, Amortised Analysis & the Measurement Harness ✅ COMPLETE
+54 cells (28 code). Verified: structure clean, all 28 cells run under warnings-as-errors with
+Java compiled at `-Xlint:all -Werror`, every printed number audited.
+
+**Builds `dsa_toolkit.py`**, the harness every other notebook imports (§5). It was written and
+verified *before* the notebook was drafted against it — the reason NB-00 is built first and alone.
+Every function was exercised against a planted failure rather than a happy path: `stress`
+minimised an 800-case failure down to `[7]`, and `cross_check` caught a genuine Java `int`
+overflow (Python 4,000,000,000 vs Java −294,967,296).
+
+**Headline demonstrations.** These are timings, so they move between machines; the prose states
+magnitudes and lets the cells print the figures.
+
+- **The crossover is a real number.** Insertion sort beats merge sort for every n below **100**,
+  and by n = 6,400 merge sort is ~70× faster. Both classes confirmed by measurement.
+- **Input distribution changes the class.** The same insertion sort measures **O(n²)** on random
+  input and **O(n)** on sorted input, where it is ~12× *faster* than merge sort at every size.
+- **The language gap.** An identical 20M-addition loop: Python ~3.6 s, Java ~0.009 s, same answer
+  — a factor in the hundreds, with JIT compilation and Python's worst-case workload both flagged.
+- **Amortised growth, observed rather than timed.** `sys.getsizeof` shows CPython's list settling
+  at a growth factor of exactly **1.1251**, with **66 reallocations across 100,000 appends**;
+  aggregate cost measures O(n). Replacing geometric growth with grow-by-one measures **O(n²)**.
+- **Cache effects are visible from Python.** The same 1,000,000 values summed sequentially, by
+  stride 16, and randomly: **1.00× / 1.45× / 2.98×**.
+- **Recursion depth.** Python raises `RecursionError` past its 1,000 default; Java survives 5,000
+  and reaches `StackOverflowError` around 100,000.
+- **A recurrence checked by counting.** Merge sort's comparisons against n·log₂n − n + 1: ratio
+  0.96 → 0.98 as n grows. No noise, no constants, machine-independent.
+- **The Master theorem's three cases, counted per level** at n = 1024: total/n = 2.00,
+  total/(n log n) = 1.10, total/n² = 2.00 respectively.
+
+**Three demos were corrected against their own output**, per quality-bar rules 2 and 3:
+
+1. **A bug in my own verification code.** `random.Random(n).randrange(...)` inside a comprehension
+   re-seeds per element and yields a list of **identical values** — insertion sort's best case.
+   That made an O(n²) algorithm measure as O(n), and produced a first draft in which insertion
+   sort won at every size up to 6,400. The fix is one shared generator, and the bug was
+   instructive enough to become **§3.1**, which now reproduces it deliberately as "the benchmark
+   that measures the wrong distribution".
+2. **The amortised demo measured noise.** Timing individual appends gave 93 scattered spikes with
+   no geometric pattern — allocator and OS noise swamp it. Replaced with `sys.getsizeof`, which
+   observes capacity directly: exact, reproducible, and a much clearer picture.
+3. **§3.2's headline was a single unstable draw.** I wrote that a narrow-range fit reports O(n)
+   for merge sort; re-run, it reported O(n log n). Measured across 8 repetitions the verdict
+   **flips — 5× O(n log n), 3× O(n)** — while the wide range is 4/4 stable. §3.2 is therefore now
+   about **reproducibility** rather than a wrong answer, which is both more honest and the more
+   useful lesson: one convincing run is not evidence. The section still proves the fitter is not
+   at fault, by feeding it noise-free data where it separates the classes exactly.
+
+**Tooling change this required.** `tools/verify_notebook.py` extracted cells into a script in the
+system temp directory and ran it there, so `from dsa_toolkit import ...` failed even though it
+works in Jupyter. Fixed twice over: run with `cwd` set to the notebook's directory, **and** put
+that directory on `sys.path` in the generated runner — because for `python script.py`,
+`sys.path[0]` is the script's directory, not the working directory. The first fix alone was not
+enough. Regression-checked against an ML notebook.
+
+**(original brief follows)**
+
 - **Unique theory:** Big-O/Ω/Θ and what each is *for*; why constants matter in practice; the RAM
   cost model and where it lies (cache, branch prediction); **amortised analysis** by all three
   methods (aggregate, accounting, potential); recurrences and the Master theorem; space
@@ -614,30 +671,60 @@ had to be corrected — that record is what makes this file useful to a session 
 
 ## 10. Open questions and decisions
 
-- [ ] **Install a JDK** (§2). Blocking for everything Java. Record the version here when done.
+- [x] ~~**Install a JDK**~~ — done 2026-09-07: **Temurin 21.0.12** at
+      `C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot`, via
+      `winget install --id EclipseAdoptium.Temurin.21.JDK -e`. It is **not on PATH**;
+      `dsa_toolkit` finds it by searching the standard install roots, so no PATH change is
+      needed and none was made.
 - [x] **Language** — Python and Java side by side. Decided 2026-09-07 by the owner.
 - [x] **Granularity** — finer-grained; 23 notebooks (§3). Decided 2026-09-07.
 - [x] **Emphasis** — foundations first (§1). Decided 2026-09-07.
-- [ ] **Java-in-notebook mechanism.** Proposed: Python cells that pass Java source to
-      `run_java()` from `dsa_toolkit.py`, so one notebook and one kernel per topic and
-      `verify_notebook.py` keeps working unchanged. The alternative — an IJava kernel and separate
-      Java notebooks — doubles the file count, breaks the side-by-side comparison that motivated
-      the bilingual choice, and cannot be verified by the existing gate. **Confirm before NB-00.**
-- [ ] **Does the repo root `README.md` get a DSA section now, or when NB-00 lands?** Proposed:
-      when NB-00 lands, so the README never advertises an empty folder.
+- [x] ~~**Java-in-notebook mechanism.**~~ Settled, and proven by NB-00: Python cells hand Java
+      source to `run_java()`; one notebook and one kernel per topic; `verify_notebook.py`
+      works unchanged. Both languages sit in the same cell, which is what makes §2.3's
+      cross-language check readable at all. **Cost measured: ~0.12 s of JVM start-up per
+      call**, so `cross_check` is an n≈50 tool and anything needing thousands of cases must
+      batch them into one JVM run. NB-15 and NB-22 will need that.
+- [x] ~~**Repo root README DSA section**~~ — the folder is listed, and now that NB-00 exists
+      `DSA-Zero-to-Hero/README.md` is the reader-facing guide it points at.
 - [ ] **A `PROBLEM_LOG.md`** in this folder, modelled on tracker 2's problem log — worth it once
       three or four notebooks exist and there is something to log.
 - [ ] **Practice problems (Part 5): where do they come from?** They must be real and correctly
       titled (rule 10). Proposed: name the problem and its source (LeetCode title, not number —
       numbers change), and never invent one.
-- [ ] `tools/verify_notebook.py`'s docstring still references the deleted `ZERO_TO_HERO_PLAN.md`.
-      Harmless, but fix it when the file is next touched.
+- [x] ~~`verify_notebook.py`'s stale docstring reference~~ — fixed while making the tool run
+      notebooks from their own directory (see the NB-00 log entry).
 
 ***
 
 ## 11. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-07 (NB-00) — first notebook complete
+- **NB-00 Complexity: COMPLETE.** 54 cells (28 code, 26 markdown). Structure clean, all 28 cells
+  run under warnings-as-errors, Java compiled with `-Xlint:all -Werror`, every number audited.
+  **1 of 23.**
+- **The JDK blocker is cleared:** Temurin **21.0.12**, installed via winget, not on PATH, located
+  by the toolkit. §10 records the exact path.
+- **`dsa_toolkit.py` was verified before anything depended on it**, which is the whole reason the
+  plan puts NB-00 first and alone.
+- **Three demos failed to demonstrate their lesson and were rebuilt** (details in the brief). The
+  most useful was §3.2: my claimed result turned out to be one unstable draw, and measuring the
+  instability directly — 8 runs, verdict flipping 5:3 — is a better section than the one I set
+  out to write.
+- **A bug in my own verification code became §3.1.** Re-seeding an RNG per element yields an
+  all-equal list, silently converting insertion sort's average case into its best case.
+- **`tools/verify_notebook.py` needed two fixes** to run a notebook that imports a sibling module:
+  `cwd`, and `sys.path`. The first alone was not enough. Regression-checked against ML NB-04.
+- **Process failure worth recording.** `build_nb00.py` was derived from the NB-13 builder with
+  `sed`, and the `OUT =` substitution silently failed to match (forward slashes in the pattern,
+  backslashes in the file), so the first build **overwrote
+  `ML-Zero-to-Hero/time_series_zero_to_hero.ipynb`**. Recovered exactly with `git checkout`,
+  because it had been committed. **Rule: check a derived builder's `OUT` path before running it,
+  and do not derive builders by `sed` on a Windows path.**
+- **Next:** NB-01 Arrays & Dynamic Arrays, which picks up §1.5's amortised argument and §1.2's
+  cache measurements.
 
 ### 2026-09-07 — plan created
 - Folder `DSA-Zero-to-Hero/` created; this plan written. **No notebooks yet: 0 of 23.**

@@ -9,6 +9,7 @@ project:
     - ML-Zero-to-Hero/index.qmd
     - ML-Zero-to-Hero/*.ipynb
     - DSA-Zero-to-Hero/index.qmd
+    - DSA-Zero-to-Hero/*.ipynb
     - DSA-Zero-to-Hero/plan.qmd
 
 # Notebooks ship with their outputs already stored, so nothing is re-executed at
@@ -21,7 +22,7 @@ execute:
 website:
   title: "Self-Prep"
   description: "Zero-to-Hero notebook series for machine learning and data structures & algorithms."
-  site-url: "https://self-prep.vercel.app"
+  site-url: "https://self-prep-seven.vercel.app"
   repo-url: "https://github.com/abpanic/Self-Prep"
   repo-actions: [source]
   search:
@@ -101,6 +102,10 @@ website:
       contents:
         - href: DSA-Zero-to-Hero/index.qmd
           text: Overview
+        - section: "Foundations"
+          contents:
+            - href: DSA-Zero-to-Hero/complexity_zero_to_hero.ipynb
+              text: "00 · Complexity & Amortised Analysis"
         - href: DSA-Zero-to-Hero/plan.qmd
           text: "Build plan & status"
 

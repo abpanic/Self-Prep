@@ -1,2 +1,49 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Line endings
+#
+# Normalise everything to LF in the repository AND check it out as LF on every
+# platform. The `eol=lf` is the part that matters: without it, `text=auto` alone
+# normalises the index but still hands Windows a CRLF working tree (because
+# core.autocrlf defaults to true there), which is what produces VS Code's
+# "this file uses LF but Git is configured to convert them to CRLF" warning.
+#
+# LF is the right default for this repository specifically:
+#   - it deploys to Linux (Vercel), and vercel-build.sh is executed by bash,
+#     where a CRLF shebang line is a hard failure;
+#   - .ipynb files are JSON written by Jupyter with LF;
+#   - the Python tooling in tools/ reads and rewrites these files, and mixed
+#     endings make every string match in a patch script a coin toss.
+#
+# Settings in .gitattributes override core.autocrlf, so this fixes the warning
+# for every clone without anyone needing to change their local git config.
+* text=auto eol=lf
+
+# Explicit, so intent survives someone editing the line above.
+*.py     text eol=lf
+*.ipynb  text eol=lf
+*.md     text eol=lf
+*.qmd    text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.json   text eol=lf
+*.scss   text eol=lf
+*.csv    text eol=lf
+*.txt    text eol=lf
+*.java   text eol=lf
+
+# Shell scripts must be LF or bash will not run them.
+*.sh     text eol=lf
+
+# Binary: never touch these.
+*.xlsx   binary
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.pdf    binary
+*.ico    binary
+*.woff   binary
+*.woff2  binary
+
+# Notebooks are JSON, so a textual diff is noisy but readable. Keep it enabled;
+# `git diff` on a notebook is better than nothing when reviewing a change.
+*.ipynb  diff

@@ -6,6 +6,8 @@ Study and interview-prep notebooks for machine learning, software engineering fu
 
 ### ML: Zero to Hero — complete
 
+**Read it online: <https://self-prep-seven.vercel.app>**
+
 A course in notebook form, in **[`ML-Zero-to-Hero/`](ML-Zero-to-Hero/)**. Each notebook takes
 one topic from "I have never fitted a model" to "I can build it, break it, diagnose it and
 defend it in an interview" — theory built from scratch, a full worked example, hard questions,
@@ -52,7 +54,8 @@ cases are flagged in the notebooks and are usually the most useful parts.
 
 ### Reading it online
 
-Both series render to a static website with [Quarto](https://quarto.org), deployed on Vercel.
+Both series render to a static website with [Quarto](https://quarto.org), deployed on Vercel
+at **<https://self-prep-seven.vercel.app>**.
 Quarto reads `.ipynb` natively and **does not re-execute anything** — it uses the outputs
 already stored in each notebook — so the build needs no Python, no scikit-learn, no dataset
 downloads and (once the DSA series exists) no JDK.
