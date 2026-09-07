@@ -1,0 +1,57 @@
+/*-- scss:defaults --*/
+
+// Slightly wider measure and a comfortable reading size — these notebooks are
+// long-form prose as much as they are code.
+$font-size-root: 16px;
+$line-height-base: 1.6;
+
+// Code blocks carry a lot of aligned, fixed-width printed tables. Keep them
+// monospaced, compact, and never wrapped.
+$code-block-font-size: 0.82em;
+$code-font-size: 0.88em;
+
+/*-- scss:rules --*/
+
+// Printed output in these notebooks is fixed-width ASCII tables. Wrapping
+// destroys them, so scroll instead — on every screen size.
+pre code,
+.cell-output pre {
+  white-space: pre !important;
+  overflow-x: auto;
+}
+
+// The <details>/<summary> answer blocks in every Part 4 are the main
+// interactive element on the page. Make them look clickable.
+details {
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 6px;
+  padding: 0.4rem 0.9rem;
+  margin: 0.8rem 0;
+}
+
+details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.3rem 0;
+}
+
+details[open] > summary {
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+  margin-bottom: 0.7rem;
+}
+
+// Wide result tables are common; let them scroll inside their own box rather
+// than pushing the page sideways.
+.cell-output-display > table,
+table.dataframe {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+// Give figures a little breathing room from the prose above them.
+.cell-output-display > img,
+figure > img {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}

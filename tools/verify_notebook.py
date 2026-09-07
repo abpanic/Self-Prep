@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """Verify a zero-to-hero notebook: structure, then a full top-to-bottom execution.
 
-This is the quality gate for the notebooks described in ZERO_TO_HERO_PLAN.md.
+The quality gate for both zero-to-hero series (see each series folder's README,
+and DSA-Zero-to-Hero/DSA_ZERO_TO_HERO_PLAN.md for the DSA quality bar).
 It exists in the repo (rather than a scratch directory) so it survives a context
 reset and can be re-run by any future session.
 
@@ -140,8 +141,12 @@ def main():
         tmp = os.path.join(tempfile.gettempdir(), "_verify_run.py")
         total = build_runner(nb, tmp)
         print("  EXECUTING %d code cells with warnings-as-errors ..." % total)
+        # Run from the notebook's own directory, which is what Jupyter does. Without
+        # this a notebook that imports a module sitting beside it (e.g. DSA-Zero-to-
+        # Hero/dsa_toolkit.py) passes in Jupyter and fails here, for no real reason.
+        workdir = os.path.dirname(os.path.abspath(args.notebook)) or None
         proc = subprocess.run([args.python, tmp], capture_output=True, text=True,
-                              encoding="utf-8", errors="replace")
+                              encoding="utf-8", errors="replace", cwd=workdir)
         out = (proc.stdout or "") + (proc.stderr or "")
         if proc.returncode == 0 and "ALL %d CODE CELLS RAN CLEAN" % total in out:
             print("  EXECUTION: clean")

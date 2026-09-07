@@ -1,0 +1,8 @@
+---
+title: "DSA: Zero to Hero — the build plan"
+subtitle: "Roster, quality bar, per-notebook briefs and status log. Published as-is, blockers included."
+toc: true
+toc-depth: 2
+---
+
+{{< include DSA_ZERO_TO_HERO_PLAN.md >}}

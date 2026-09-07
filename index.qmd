@@ -1,0 +1,90 @@
+---
+title: "Self-Prep"
+subtitle: "Two notebook series that take a topic from zero to job-ready — and show their working."
+toc: false
+---
+
+Every notebook here does the same thing: build one topic up from nothing, implement it from
+scratch, break it on purpose, and then say plainly what it is bad at.
+
+The rule that shapes all of them is that **no claim is made that was not measured**. Every code
+cell has been executed in order with warnings treated as errors, and every number quoted in the
+prose was checked against what the code actually printed. Where a result contradicted the point
+being made, the prose was rewritten to match the result — those cases are flagged where they
+occur, and they are usually the most useful parts.
+
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+### [ML: Zero to Hero](ML-Zero-to-Hero/index.qmd)
+
+**16 notebooks · complete · 952 cells**
+
+Foundations, then the models, then the cross-cutting problems, then the applied ones. Each
+notebook implements the algorithm from scratch, checks it against scikit-learn in the same cell,
+and spends a full section on the thing that most often goes wrong.
+
+A few of the results it argues for:
+
+- A random train/test split inflates a time-series score by 28% — measured, not asserted.
+- Resampling before the split fabricates a 0.83 ROC-AUC out of pure noise.
+- The best-RMSE recommender is nearly the worst recommender.
+- LOF scores *below random* on real card fraud — and there is a one-parameter fix.
+
+[Start with NB-00 →](ML-Zero-to-Hero/ml_foundations_zero_to_hero.ipynb)
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### [DSA: Zero to Hero](DSA-Zero-to-Hero/index.qmd)
+
+**23 notebooks · planned · 0 built**
+
+The same treatment for data structures and algorithms, with a stricter quality bar — because in
+this domain correctness and cost are decidable, so they get tested rather than asserted:
+
+- Every implementation stress-tested against a brute-force reference.
+- **Python and Java written side by side** and checked against each other on identical inputs.
+- Every complexity **measured** at doubling sizes, not claimed.
+- Every invariant asserted in code after every operation.
+
+Only the build plan exists so far, and it is published as-is.
+
+[Read the plan →](DSA-Zero-to-Hero/plan.qmd)
+:::
+
+:::
+
+## How each notebook is laid out
+
+The same seven parts every time, so you always know where to look.
+
+| Part | Contents |
+|------|----------|
+| **0** | Setup — one install cell, one import cell |
+| **1** | **Theory from zero** — numbered steps, implemented from scratch, checked against a reference in the same cell |
+| **2** | **Worked example** — one problem, end to end, nothing skipped |
+| **3** | The topic's signature difficulty, in depth |
+| **4** | **Tough questions** — ~12 with hidden answers, plus 3 coding challenges |
+| **5** | **Practice** — 5–10 datasets or problems, each with a brief and the trap it sets |
+| **6** | **Reading** — the papers behind each section, with an "if you read only one" pick |
+
+## Running them yourself
+
+Everything is plain Jupyter. Clone the repo and open any notebook:
+
+```bash
+git clone https://github.com/abpanic/Self-Prep.git
+pip install numpy pandas matplotlib scipy scikit-learn
+```
+
+Each notebook's Part 0 installs anything else it needs, so opening one and running it top to
+bottom is enough. A few practice datasets download from OpenML on first use and cache afterwards.
+
+::: {.callout-note collapse="true"}
+## Why some code cells show no output
+
+Nine of the sixteen ML notebooks are currently stored without their execution outputs, so on this
+site their code appears with no results beneath it. Every one of them passes a full top-to-bottom
+run under warnings-as-errors — the outputs simply have not been saved back into the files yet.
+Run them locally and you will see everything the prose describes.
+:::

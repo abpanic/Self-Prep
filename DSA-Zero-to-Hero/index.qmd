@@ -1,0 +1,90 @@
+---
+title: "DSA: Zero to Hero"
+subtitle: "23 notebooks, planned. None built yet."
+toc: true
+---
+
+::: {.callout-important}
+## Nothing is built yet
+
+This series exists as a plan and nothing more. The page below describes what it will be; the
+[build plan](plan.qmd) is the working document and is published here as-is,
+including its open questions and its blockers.
+:::
+
+The same treatment as [ML: Zero to Hero](../ML-Zero-to-Hero/index.qmd) — one topic per notebook,
+built from nothing, implemented from scratch, then broken on purpose — applied to data structures
+and algorithms.
+
+## Three decisions that shape it
+
+| Decision | Choice | What it costs |
+|---|---|---|
+| **Language** | **Python and Java side by side** | Every implementation written twice, and both verified. |
+| **Granularity** | **Finer-grained** | 23 notebooks. Sorting is two, graphs are two, BSTs and balanced trees are separate. |
+| **Emphasis** | **Foundations first** | Amortised analysis, loop invariants and correctness arguments lead. Interview patterns follow from them. |
+
+## A stricter quality bar than the ML series
+
+That is not a stylistic choice. In ML, most claims are empirical and contestable. In DSA,
+correctness and cost are *decidable* — so they get tested rather than asserted:
+
+1. **Every implementation is differentially tested** against a brute-force reference over at least
+   1,000 randomised inputs, plus a standard adversarial set (empty, size 1, all-equal, sorted,
+   reverse-sorted, many-duplicates, min/max values).
+2. **Python and Java are tested against each other** on identical generated inputs and must agree.
+   This is what catches integer overflow, division semantics, sort stability and iteration order —
+   a class of bug neither implementation alone would reveal.
+3. **Every complexity claim is measured**, timed at doubling input sizes with the ratios printed.
+   Where the measurement disagrees with the textbook bound, the notebook investigates and explains
+   the gap rather than dropping it.
+4. **Every invariant is asserted in code** after every operation in a randomised stress test — not
+   described in prose and hoped for.
+5. **Every non-obvious algorithm carries its correctness argument**: an exchange argument for
+   greedy, a recurrence and Master-theorem case for divide-and-conquer, an optimal-substructure
+   statement for DP, a loop invariant for binary search.
+
+## The planned roster
+
+**Foundations** — 00 Complexity, Amortised Analysis & the Measurement Harness
+
+**Linear structures** — 01 Arrays & Dynamic Arrays · 02 Strings & String Algorithms ·
+03 Hashing & Hash Tables · 04 Linked Lists · 05 Stacks, Queues & Deques
+
+**Trees** — 06 Trees & Traversals · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
+09 Heaps & Priority Queues
+
+**Specialised structures** — 10 Tries · 11 Disjoint Set Union · 12 Fenwick & Segment Trees
+
+**Sorting and searching** — 13 Comparison Sorts & the Lower Bound · 14 Linear-Time Sorts &
+Selection · 15 Binary Search & the Invariant Discipline
+
+**Paradigms** — 16 Recursion & Divide and Conquer · 17 Backtracking · 18 Greedy Algorithms &
+Exchange Arguments · 19 Dynamic Programming
+
+**Graphs and bits** — 20 Graphs I: Representation & Traversal · 21 Graphs II: Shortest Paths, MST
+& Flow · 22 Bit Manipulation
+
+## A few things the plan commits to demonstrating
+
+Chosen because they are the places where measuring beats asserting, or where the two languages
+disagree:
+
+- **The `(lo + hi) / 2` overflow bug in binary search**, which Java actually exhibits and Python
+  does not — the single clearest argument for writing both. The JDK carried it for nine years.
+- **Linked lists are usually the wrong answer** — traversal benchmarked against an array of the
+  same length, where the cache-miss gap is an order of magnitude.
+- **Hash tables degrade to O(n) on adversarial keys** — colliding keys constructed, then measured.
+- **Median of medians gives worst-case O(n) selection and loses in practice** — implemented, then
+  measured, with the constant factor stated honestly.
+- **Python has arbitrary-precision integers and Java does not**, so the same bit expression gives
+  different answers in the two languages. Shown disagreeing, then reconciled.
+
+## Also in this folder
+
+`trackers/` holds the two DSA study-tracker notebooks this series is being built from — topic
+checklists over the same ground, but with no implementations, no measured complexity, no Java
+and no proofs. `trackers/archive/` keeps the original combined tracker they were split from.
+Neither is published here.
+
+[Read the full build plan →](plan.qmd)

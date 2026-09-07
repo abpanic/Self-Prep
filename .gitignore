@@ -4,3 +4,9 @@ __pycache__/
 *.pyc
 specialty_steel_watchlist_prices_2022_to_now.xlsx
 catboost_info/
+_site/
+.quarto/
+.vercel/
+
+/.quarto/
+**/*.quarto_ipynb

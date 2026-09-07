@@ -1,0 +1,129 @@
+project:
+  type: website
+  output-dir: _site
+  # Only the two Zero-to-Hero series are published. Everything else in the repo
+  # (the tracker notebooks, junk/, the practical notebooks) is deliberately left
+  # out: add it here if that changes.
+  render:
+    - index.qmd
+    - ML-Zero-to-Hero/index.qmd
+    - ML-Zero-to-Hero/*.ipynb
+    - DSA-Zero-to-Hero/index.qmd
+    - DSA-Zero-to-Hero/plan.qmd
+
+# Notebooks ship with their outputs already stored, so nothing is re-executed at
+# render time. That is what keeps the build free of Python, scikit-learn, dataset
+# downloads and (later, for DSA) a JDK.
+execute:
+  enabled: false
+  freeze: auto
+
+website:
+  title: "Self-Prep"
+  description: "Zero-to-Hero notebook series for machine learning and data structures & algorithms."
+  site-url: "https://self-prep.vercel.app"
+  repo-url: "https://github.com/abpanic/Self-Prep"
+  repo-actions: [source]
+  search:
+    location: navbar
+    type: overlay
+  page-navigation: true
+  back-to-top-navigation: true
+
+  navbar:
+    background: primary
+    left:
+      - href: index.qmd
+        text: Home
+      - href: ML-Zero-to-Hero/index.qmd
+        text: "ML: Zero to Hero"
+      - href: DSA-Zero-to-Hero/index.qmd
+        text: "DSA: Zero to Hero"
+    right:
+      - icon: github
+        href: https://github.com/abpanic/Self-Prep
+        aria-label: GitHub
+
+  sidebar:
+    - id: ml
+      title: "ML: Zero to Hero"
+      style: floating
+      collapse-level: 2
+      contents:
+        - href: ML-Zero-to-Hero/index.qmd
+          text: Overview
+        - section: "Foundations"
+          contents:
+            - href: ML-Zero-to-Hero/ml_foundations_zero_to_hero.ipynb
+              text: "00 · ML Foundations"
+        - section: "The core four"
+          contents:
+            - href: ML-Zero-to-Hero/linear_regression_zero_to_hero.ipynb
+              text: "01 · Linear Regression"
+            - href: ML-Zero-to-Hero/logistic_regression_zero_to_hero.ipynb
+              text: "02 · Logistic Regression"
+            - href: ML-Zero-to-Hero/decision_trees_zero_to_hero.ipynb
+              text: "03 · Decision Trees"
+            - href: ML-Zero-to-Hero/random_forest_zero_to_hero.ipynb
+              text: "04 · Random Forest"
+        - section: "The rest of the algorithms"
+          contents:
+            - href: ML-Zero-to-Hero/gradient_boosting_zero_to_hero.ipynb
+              text: "05 · Gradient Boosting"
+            - href: ML-Zero-to-Hero/svm_zero_to_hero.ipynb
+              text: "06 · Support Vector Machines"
+            - href: ML-Zero-to-Hero/knn_zero_to_hero.ipynb
+              text: "07 · K-Nearest Neighbors"
+            - href: ML-Zero-to-Hero/naive_bayes_zero_to_hero.ipynb
+              text: "08 · Naive Bayes"
+            - href: ML-Zero-to-Hero/pca_zero_to_hero.ipynb
+              text: "09 · PCA"
+            - href: ML-Zero-to-Hero/kmeans_zero_to_hero.ipynb
+              text: "10 · K-Means & Clustering"
+        - section: "Cross-cutting"
+          contents:
+            - href: ML-Zero-to-Hero/imbalanced_classification_zero_to_hero.ipynb
+              text: "11 · Imbalanced Classification"
+            - href: ML-Zero-to-Hero/explainable_ai_zero_to_hero.ipynb
+              text: "12 · Explainable AI"
+        - section: "Applied problem types"
+          contents:
+            - href: ML-Zero-to-Hero/time_series_zero_to_hero.ipynb
+              text: "13 · Time Series"
+            - href: ML-Zero-to-Hero/recommender_systems_zero_to_hero.ipynb
+              text: "14 · Recommender Systems"
+            - href: ML-Zero-to-Hero/anomaly_detection_zero_to_hero.ipynb
+              text: "15 · Anomaly Detection"
+
+    - id: dsa
+      title: "DSA: Zero to Hero"
+      style: floating
+      contents:
+        - href: DSA-Zero-to-Hero/index.qmd
+          text: Overview
+        - href: DSA-Zero-to-Hero/plan.qmd
+          text: "Build plan & status"
+
+format:
+  html:
+    theme:
+      light: [cosmo, theme.scss]
+      dark: [darkly, theme.scss]
+    toc: true
+    toc-depth: 3
+    toc-expand: 2
+    code-copy: true
+    code-overflow: scroll
+    code-line-numbers: false
+    highlight-style: github
+    df-print: default
+    fig-responsive: true
+    link-external-newwindow: true
+    anchor-sections: true
+    smooth-scroll: true
+    # Long printed tables are the house style in these notebooks; let them scroll
+    # rather than wrap into nonsense on a phone.
+    grid:
+      sidebar-width: 300px
+      body-width: 1000px
+      margin-width: 250px

@@ -151,5 +151,25 @@ most instructive parts of the notebook, and they are flagged where they occur.
 
 ---
 
+## Also in this folder
+
+This folder is the home for all ML work in the repository, not only the series above. Two
+subfolders hold the material the series grew out of. They serve a different purpose and are worth
+keeping: the series *teaches* a topic, the trackers *track* what you have covered, and the
+practicals are quick worked references.
+
+| Folder | What is in it | When you would open it |
+|---|---|---|
+| **`trackers/`** | The ML study tracker split into four focused notebooks: foundations & workflow, classical ML, deep learning / GenAI / MLOps, and practical use cases | To tick off what you have covered, or to find the topic checklist behind a notebook above |
+| **`practicals/`** | Worked-example notebooks &mdash; supervised, unsupervised, deep learning, and an earlier mixed one. `practicals/archive/` holds superseded versions (v1&ndash;v3) | For a quick worked reference on a technique, without the full theory build-up |
+
+There is also a **`data/`** folder holding the specialty-steel price spreadsheets. No notebook
+reads them; they are parked there as raw material.
+
+None of these folders is published to the website; only the 16 series notebooks are. The
+notebooks all run the same way: open in Jupyter or VS Code and run top to bottom.
+
+---
+
 The repository root, [`../README.md`](../README.md), lists this series alongside the
 other notebook collections here.
