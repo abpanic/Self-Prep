@@ -14,7 +14,8 @@ practice datasets, and the research papers behind each section.
 **Start with [`ML-Zero-to-Hero/README.md`](ML-Zero-to-Hero/README.md)** for the reading order.
 
 Complete so far: **Foundations → Linear Regression → Logistic Regression → Decision Trees →
-Random Forest → Gradient Boosting → SVMs → KNN → Naive Bayes → PCA** (10 of 16).
+Random Forest → Gradient Boosting → SVMs → KNN → Naive Bayes → PCA → Clustering → Imbalanced
+Classification** (12 of 16).
 
 Every completed notebook has had all of its code cells executed in order with warnings treated
 as errors, and every number quoted in its prose checked against what the code actually printed.

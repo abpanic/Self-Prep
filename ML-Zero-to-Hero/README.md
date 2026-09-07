@@ -51,7 +51,7 @@ NB-07 are the two **distance-based** models and are best read as a pair.
 | **07** | [`knn_zero_to_hero.ipynb`](knn_zero_to_hero.ipynb) | Lazy learning, **the scaling trap** quantified, k as a bias-variance dial, **the curse of dimensionality measured** rather than asserted, the Cover & Hart bound verified, and why "no training time" is a production liability | ✅ |
 | **08** | [`naive_bayes_zero_to_hero.ipynb`](naive_bayes_zero_to_hero.ipynb) | Bayes' rule, **the naive assumption measured failing**, log-space underflow, smoothing, the four variants, and **why a false assumption still classifies well** — plus the metric that hides its overconfidence | ✅ |
 | **09** | [`pca_zero_to_hero.ipynb`](pca_zero_to_hero.ipynb) | Variance maximisation **shown identical to** reconstruction-error minimisation, the SVD route and why, what a component is and is not, and **which preprocessing actually leaks** | ✅ |
-| **10** | `kmeans_zero_to_hero.ipynb` | K-Means, hierarchical, DBSCAN, GMM — and why evaluating clusters is genuinely hard | ⬜ |
+| **10** | [`kmeans_zero_to_hero.ipynb`](kmeans_zero_to_hero.ipynb) | K-Means, hierarchical, DBSCAN and GMM on the same data — **local optima**, the five ways of choosing k that disagree, and **why clustering pure noise still looks like a result** | ✅ |
 
 ### Cross-cutting — read after the algorithms
 
@@ -59,7 +59,7 @@ These reference the models above, so they land better once those exist.
 
 | # | Notebook | What you get | Status |
 |---|---|---|---|
-| **11** | `imbalanced_classification_zero_to_hero.ipynb` | Resampling, SMOTE and its failure modes, cost-sensitive learning, PR-AUC | ⬜ |
+| **11** | [`imbalanced_classification_zero_to_hero.ipynb`](imbalanced_classification_zero_to_hero.ipynb) | PR-AUC vs ROC-AUC, SMOTE built from scratch and its failure modes, **the resampling leak that fabricates 0.83 ROC-AUC from noise**, and why threshold tuning beats all of it | ✅ |
 | **12** | `explainable_ai_zero_to_hero.ipynb` | Partial dependence, SHAP, LIME — and why the methods disagree | ⬜ |
 
 ### Applied problem types
@@ -70,7 +70,7 @@ These reference the models above, so they land better once those exist.
 | **14** | `recommender_systems_zero_to_hero.ipynb` | Collaborative filtering, matrix factorisation, ranking metrics, cold start | ⬜ |
 | **15** | `anomaly_detection_zero_to_hero.ipynb` | Isolation Forest, LOF, One-Class SVM, and evaluating without labels | ⬜ |
 
-**Progress: 10 of 16 complete.**
+**Progress: 12 of 16 complete.**
 
 ---
 

@@ -26,14 +26,14 @@ Legend: ✅ done · 🚧 in progress · ⬜ not started · ⏸ deferred
 | 07 | **K-Nearest Neighbors** | `ML-Zero-to-Hero/knn_zero_to_hero.ipynb` | ✅ | 52 (24 code) | ✅ struct + run |
 | 08 | **Naive Bayes** | `ML-Zero-to-Hero/naive_bayes_zero_to_hero.ipynb` | ✅ | 61 (30 code) | ✅ struct + run |
 | 09 | **PCA & Dimensionality Reduction** | `ML-Zero-to-Hero/pca_zero_to_hero.ipynb` | ✅ | 57 (28 code) | ✅ struct + run |
-| 10 | K-Means & Clustering | `ML-Zero-to-Hero/kmeans_zero_to_hero.ipynb` | ⬜ | — | — |
-| 11 | Imbalanced Classification | `ML-Zero-to-Hero/imbalanced_classification_zero_to_hero.ipynb` | ⬜ | — | — |
+| 10 | **K-Means & Clustering** | `ML-Zero-to-Hero/kmeans_zero_to_hero.ipynb` | ✅ | 56 (29 code) | ✅ struct + run |
+| 11 | **Imbalanced Classification** | `ML-Zero-to-Hero/imbalanced_classification_zero_to_hero.ipynb` | ✅ | 46 (22 code) | ✅ struct + run |
 | 12 | Explainable AI | `ML-Zero-to-Hero/explainable_ai_zero_to_hero.ipynb` | ⬜ | — | — |
 | 13 | Time Series Forecasting | `ML-Zero-to-Hero/time_series_zero_to_hero.ipynb` | ⬜ | — | — |
 | 14 | Recommender Systems | `ML-Zero-to-Hero/recommender_systems_zero_to_hero.ipynb` | ⬜ | — | — |
 | 15 | Anomaly Detection | `ML-Zero-to-Hero/anomaly_detection_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**Total planned: 16 notebooks** (1 shared foundations + 15 topic notebooks). **10 of 16 done.**
+**Total planned: 16 notebooks** (1 shared foundations + 15 topic notebooks). **12 of 16 done.**
 
 **Scale, measured rather than projected.** The original estimate of ~150 cells each (≈ 2,300
 total) was made before NB-00 existed. Extracting the shared workflow into NB-00 cut topic
@@ -43,15 +43,15 @@ notebooks to roughly a third of that:
 |---|---|
 | NB-01 (written before NB-00 existed) | 157 |
 | NB-00 (the shared foundations) | 78 |
-| NB-02..09 (the post-NB-00 template) | 44–62, **~53 average** |
-| **Built so far (10 notebooks)** | **658** |
-| Projected total for 16 | **~976** |
+| NB-02..11 (the post-NB-00 template) | 44–62, **~52 average** |
+| **Built so far (12 notebooks)** | **760** |
+| Projected total for 16 | **~968** |
 
-So by cell count the series is **~67% built** (658 of ~976) while being 10 of 16 by notebook
+So by cell count the series is **~79% built** (760 of ~968) while being 12 of 16 by notebook
 count. The gap is NB-01: it alone is 16% of the projected total, and every remaining notebook
-is template-sized. Do not read that as "the hard part is done" — the remaining six are
-NB-10 (clustering), the two cross-cutting notebooks (11, 12) and three applied problem types
-(13–15), which have less prior art in the repo to draw on than the algorithm notebooks did.
+is template-sized. The remaining four are NB-12 (Explainable AI) and the three applied problem
+types (13–15), which have less prior art in the repo to draw on than the algorithm notebooks
+did.
 
 Treat each as its own project with its own verification pass.
 
@@ -71,13 +71,15 @@ Self-Prep/
 │   ├── svm_zero_to_hero.ipynb
 │   ├── knn_zero_to_hero.ipynb
 │   ├── naive_bayes_zero_to_hero.ipynb
-│   └── pca_zero_to_hero.ipynb
+│   ├── pca_zero_to_hero.ipynb
+│   ├── kmeans_zero_to_hero.ipynb
+│   └── imbalanced_classification_zero_to_hero.ipynb
 └── tools/
     ├── verify_notebook.py          <- the quality gate
     └── check_links.py              <- relative-link checker (see 7)
 ```
 
-Ten of the sixteen exist. Add each new file to this tree when it lands.
+Twelve of the sixteen exist. Add each new file to this tree when it lands.
 
 **Two READMEs, two audiences — keep them distinct:**
 
@@ -288,6 +290,10 @@ machine will need network access for the first verification pass.
 | `MultinomialNB(alpha=0)` needs `force_alpha=True` **and** still warns | NB-08 |
 | `fetch_20newsgroups` **sorts** `categories` — index `target_names` | NB-08 |
 | Millisecond fit-time ratios are not reproducible; compute them at runtime | NB-06, NB-08 |
+| `np.corrcoef` divides by zero on constant columns | NB-09 |
+| sklearn's built-in `"f1"`/`"precision"` scorers warn when nothing is predicted positive | NB-11 |
+| pandas 3 `.astype(str)` **decodes** bytes rather than repr-ing them | NB-11 |
+| `average_precision_score` does not accept `zero_division` (careless regex hazard) | NB-11 |
 
 ### Verify
 
@@ -810,7 +816,62 @@ rule and is now the notebook's most distinctive section.
 
 ---
 
-### NB-10 — K-Means & Clustering ⬜
+### NB-10 — K-Means & Clustering ✅ COMPLETE
+56 cells (29 code). Verified: structure clean, all 29 cells run under warnings-as-errors,
+every printed number audited. **Passed the full verification on the first build.**
+
+**Structure as built:** Part 1 theory (clustering is ill-posed · Lloyd's from scratch ·
+**local optima** · k-means++ · **what k-means assumes** · scaling · **choosing k five ways**
+· **clusters from noise**) → Part 2 digits with labels hidden → **Part 3 hierarchical /
+DBSCAN / GMM** → Part 4 questions → Part 5 datasets → Part 6 papers.
+
+**Headline demonstrations** (verified numbers):
+
+- **Local optima:** 30 runs at `n_init=1` give **21 distinct solutions**, worst **1.71×** the
+  best, only **8 of 30** finding the best. k-means++ narrows it to 9 solutions / 1.44×.
+- **k-means++ earns its keep as k grows:** at k=5 it is indistinguishable from random init;
+  by k=20 the gap is large in both best and worst case.
+- **Choosing k, on data with a known answer of 6:** elbow picks 3, silhouette picks 3,
+  Davies-Bouldin picks 4, **Calinski-Harabasz and the gap statistic pick 6**. Three of five
+  wrong, and they disagree.
+- **Clusters from pure noise:** uniform random points score silhouette **0.38-0.42** across
+  k=2..8 (real blobs score 0.57). The **gap statistic answered k=1 on 8 of 8** independent
+  noise samples, and its VALUE separates structure from noise 1.70 vs 0.03.
+- **Digits worked example:** the label-free metrics pick k=15 / k=4 / k=15 — **none finds
+  k=10**. Ward hierarchical wins on ARI (0.7940) over GMM (0.7279) and k-means (0.6696), and
+  the silhouette column does *not* rank the methods the way ARI does.
+- **Single linkage chaining:** solves two moons perfectly (ARI 1.0), then 12 bridging points
+  out of 412 collapse it to **−0.0003**.
+- **DBSCAN in 64 dimensions fails** — no usable `eps` on digits (all-noise, 25 clusters, or
+  one cluster), for NB-07 §1.5's reason.
+
+**The finding that reframes the standard teaching.** The textbook list of k-means failures
+(anisotropy, unequal variance, unequal size, non-convexity) is not ranked correctly:
+
+- **Anisotropy barely matters when clusters are separated.** At `cluster_std=0.6` k-means
+  scores a perfect **1.0** on sheared clusters; only at 1.5 does the same shear cost ~0.39 ARI.
+  The assumptions are only under stress when clusters compete for points.
+- **Unequal SIZES is the failure that matters**, and it is invisible: at fixed separation,
+  sizes 200/200/200 → ARI 0.93, but 580/15/5 → **0.03** while GMM holds **0.84**. WCSS is a
+  sum, so splitting the big cluster beats isolating the small one. Directly relevant to anyone
+  clustering to find a rare segment.
+
+**Prose corrected against measured output:**
+
+1. **Ward linkage is NOT tolerant of unequal sizes** — it scored **0.2241**, worse than
+   k-means' 0.3272, while average linkage scored 0.8427. Ward minimises within-cluster
+   variance, which is k-means' objective by another route, so it inherits the same bias. The
+   §3.4 comparison table and Q5 were corrected, and the mechanism is now taught.
+2. The DBSCAN `eps` sweep and the digit-fragmentation claim both quoted numbers from a
+   different sample size than the notebook uses; both now compute themselves at runtime.
+
+**Bugs caught in my own verification code** (before any cell was written): the gap statistic
+appeared to fail on noise (k=2) on a single sample — across 8 samples it is correct 8/8; and
+the first shape demos applied `StandardScaler`, which partly un-sheared the anisotropic case
+and hid the effect being measured.
+
+**(original brief follows)**
+
 Folds in the extras from `Unsupervised_Learning_Practical_v4.ipynb`.
 - **Unique theory:** Lloyd's algorithm; the objective (within-cluster sum of squares) and why
   it only finds a local optimum; k-means++ initialisation; choosing k (elbow, silhouette, gap)
@@ -823,7 +884,64 @@ Folds in the extras from `Unsupervised_Learning_Practical_v4.ipynb`.
 
 ---
 
-### NB-11 — Imbalanced Classification ⬜
+### NB-11 — Imbalanced Classification ✅ COMPLETE
+46 cells (22 code). Verified: structure clean, all 22 cells run under warnings-as-errors,
+every printed number audited.
+
+**Structure as built:** Part 1 theory (why accuracy lies · **PR vs ROC** · the three levers ·
+**SMOTE from scratch** · where interpolation goes wrong · **threshold moving** · **does
+resampling help?** · calibration damage) → Part 2 mammography worked example → **Part 3 the
+leak + cost-based thresholds** → Part 4 questions → Part 5 datasets → Part 6 papers.
+
+**Extra dependency added:** `imbalanced-learn` 0.14.2. The install cell handles it, and SMOTE
+is also implemented from scratch in §1.4 so the core lesson does not depend on the library.
+
+**Headline demonstrations** (verified numbers):
+
+- **The leak, and it is the largest in the series.** SMOTE before cross-validation on **pure
+  noise** (labels independent of features) gives **ROC-AUC 0.8323** where the truth is 0.50.
+  Inside an `imblearn` pipeline: 0.4948. Every sampler fabricates 0.20–0.34 of ROC-AUC.
+- **PR vs ROC on one fixed signal**, subsampling only the positives: ROC-AUC stays flat
+  (0.8695 → 0.8437 from 50% to 1% minority) while PR-AUC collapses **0.8775 → 0.2152**.
+- **Resampling does not improve ranking.** 12 configurations across dimensionality, imbalance
+  and separation: SMOTE reduced PR-AUC in **11**, mean **−0.0525**; the one improvement was
+  +0.0029. Reproduced on real mammography data.
+- **Threshold tuning beats it, free.** Untouched model + tuned threshold: **F1 0.1341** vs
+  SMOTE's 0.0581 and class_weight's 0.0583, both at threshold 0.5.
+- **Calibration destroyed:** mean predicted probability 0.0168 (true rate 0.0160) → 0.39/0.37/
+  0.41 under class weights / SMOTE / undersampling; Brier 0.0157 → ~0.20.
+- **Cost-based thresholds** on mammography, with the honest finding that the empirical optimum
+  and Elkan's C_FP/(C_FP+C_FN) formula disagree because the model is not perfectly calibrated,
+  and that the cost curve is flat near its minimum.
+
+**The finding that corrects this brief.** The brief said "SMOTE on high-dimensional or
+categorical data is usually a mistake." Measured, the categorical failure is **conditional and
+often absent**: with one categorical column and 3 numeric ones, **0%** of synthetic values are
+invalid, because same-category points are nearer so interpolation returns the category
+unchanged (100% same-category neighbours). It breaks when the column is a *small share of the
+distance* — 29.6% invalid with 30 numeric columns, **92.8%** with 50 levels and 30 numeric.
+§1.5 and Q4 now teach the mechanism rather than the slogan. The high-dimensional claim was
+also not supported: SMOTE hurt *more* at 10 features than at 1,000.
+
+**A precision issue caught in my own headline.** The PR-AUC "inflation" of +0.70 in the leak
+demo partly reflects a **baseline shift** — resampling makes the set 50% positive, so PR-AUC's
+random baseline moves from 0.043 to 0.50. ROC-AUC has a 0.50 baseline at any balance, so §3.1
+now compares samplers on ROC-AUC and states the distinction explicitly. The leak is unambiguous
+either way, but the original framing would not have survived a sharp reader.
+
+**Datasets rejected during verification:** `kddcup99` (subset SA) is too easy — every method
+scores PR-AUC ~0.99, so there is nothing to fix. Settled on imbalanced-learn's `mammography`
+(11,183 × 6, 2.3% positive), which is genuinely hard (PR-AUC 0.61–0.75) and carries a real
+cost asymmetry.
+
+**Library gotchas found:** sklearn's built-in `"f1"`/`"precision"` scorers raise
+`UndefinedMetricWarning` under warnings-as-errors when a model predicts no positives — the
+notebook defines zero-division-safe scorers once and uses them throughout. And in pandas 3,
+`.astype(str)` on a bytes column **decodes** rather than repr-ing it, so comparing against
+`"b'normal.'"` silently matches nothing.
+
+**(original brief follows)**
+
 Cross-cutting — build after NB-02..05 so it can reference them.
 - **Unique content:** why accuracy is a lie; resampling (random over/under, SMOTE and its
   failure modes); class weights; threshold moving; cost-sensitive learning from a real cost
@@ -893,6 +1011,53 @@ Cross-cutting — build after the model notebooks.
 ## 9. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-07 (NB-11)
+- **NB-11 Imbalanced Classification: COMPLETE.** 46 cells (22 code, 24 markdown). Verified:
+  structure clean, all 22 cells run under warnings-as-errors, every printed number audited.
+- Adds **`imbalanced-learn`** as the series' second extra dependency (after catboost in NB-05).
+  SMOTE is also written from scratch in §1.4, so nothing essential depends on the library.
+- **The notebook's conclusion contradicts the standard advice**, and it is measured rather than
+  asserted: across 12 configurations SMOTE reduced PR-AUC in 11, threshold tuning beat every
+  resampling method on F1, and resampling moved the mean predicted probability from 0.017 to
+  0.39. This matches Elor & Averbuch-Elor (2022), which is cited as the "read this one" paper.
+- **The leak demo is the largest in the series:** SMOTE before CV on pure noise gives ROC-AUC
+  **0.8323** against a truth of 0.50.
+- **Two corrections to my own work during the audit**, both worth recording:
+  - The brief's claim that SMOTE breaks on categorical data is **conditional**. It does not
+    break at all when the categorical column dominates the distance (0% invalid values), and
+    breaks badly when it does not (92.8%). §1.5 now teaches the mechanism.
+  - My headline over-claimed: part of the PR-AUC "inflation" in the leak demo is a **baseline
+    shift**, since resampling makes the evaluation set 50% positive. §3.1 was rewritten to
+    compare samplers on ROC-AUC, which has a fixed 0.50 baseline, and to state the distinction.
+- **Dataset rejected:** `kddcup99` proved too easy (PR-AUC ~0.99 for everything). Switched to
+  `mammography`, which is hard and has a genuine cost asymmetry for §3.2.
+- **Two library gotchas added to §7's table:** sklearn's built-in `f1`/`precision` scorers warn
+  when nothing is predicted positive (fatal under warnings-as-errors), and pandas 3's
+  `.astype(str)` decodes bytes rather than repr-ing them.
+
+### 2026-09-07 (NB-10)
+- **NB-10 K-Means & Clustering: COMPLETE.** 56 cells (29 code, 27 markdown). Verified:
+  structure clean, all 29 cells run under warnings-as-errors, every printed number audited.
+  Passed the full verification on the **first** build — the third notebook to do so.
+- Written around the fact that clustering has **no ground truth**, so the notebook spends more
+  effort on evaluation than on the algorithm. Part 2 deliberately withholds the digit labels
+  until §2.4 so the reader sees which decisions the label-free metrics could actually support.
+- **Two findings reframe the standard teaching**, both measured:
+  - The textbook list of k-means failures is mis-ranked. **Anisotropy barely matters** when
+    clusters are separated (perfect ARI on sheared clusters at `cluster_std=0.6`), while
+    **unequal cluster sizes** collapse it from 0.93 to **0.03** at fixed separation. The
+    second failure is the one that matters and the one nobody demonstrates.
+  - **Ward linkage inherits k-means' bias**, because it minimises within-cluster variance —
+    k-means' objective by another route. Measured at ARI 0.2241 on unequal sizes against
+    k-means' 0.3272 and average linkage's 0.8427. My own §3.4 comparison table had called
+    hierarchical "tolerant"; corrected, with the mechanism now explained in §3.4 and Q5.
+- **The gap statistic is the notebook's practical takeaway.** It is the only one of five
+  methods that can answer "k=1, there are no clusters", and it did so on **8 of 8** noise
+  samples where silhouette scored the same noise at 0.42.
+- **Bugs in my own verification code again** — a single-sample gap-statistic misfire that
+  looked like a real failure until repeated across samples, and a `StandardScaler` in the shape
+  demos that partly un-sheared the data and hid the effect being measured.
 
 ### 2026-09-07 (NB-09)
 - **NB-09 PCA & Dimensionality Reduction: COMPLETE.** 57 cells (28 code, 29 markdown).
@@ -1185,17 +1350,24 @@ Append a dated entry every session. Newest first.
 
 ## 10. Open questions for the user
 
-- [x] ~~Build **NB-00 Foundations** first?~~ **Done 2026-09-06.** Through NB-09 as of the
-      latest session; next up is **NB-10 K-Means & Clustering**.
+- [x] ~~Build **NB-00 Foundations** first?~~ **Done 2026-09-06.** Through NB-11 as of the
+      latest session; next up is **NB-12 Explainable AI**.
 - [x] ~~Ship notebooks output-free?~~ **No** — the convention is **ship with outputs**.
-- [ ] **Two notebooks still ship without outputs.** As of the NB-08 session the position is:
-      NB-00 40/40, NB-01 74/77, NB-02 32/35, NB-04 23/26, NB-05 22/25, NB-06 25/28, NB-07
-      24/24 — all good. **NB-03 (0/28), NB-08 (0/30) and NB-09 (0/28) carry none.** On GitHub those two
-      render as code with no results, which undercuts the "every number is verified" claim for
-      a reader who is only browsing. Both pass `--run`, so each needs one clean top-to-bottom
-      run in VSCode and a save — a save, not a fix.
-      (Counts below the cell total are normal: a cell that runs and prints nothing stores no
-      output. Re-check with the snippet in §7 rather than assuming.)
+- [ ] **Five notebooks still ship without stored outputs.** As of the NB-11 session:
+
+      | carries outputs | none stored |
+      |---|---|
+      | NB-00 40/40, NB-01 74/77, NB-02 32/35, NB-04 23/26, NB-05 22/25, NB-06 25/28, NB-07 24/24 | **NB-03, NB-08, NB-09, NB-10, NB-11** |
+
+      On GitHub those five render as code with no results, which undercuts the "every number
+      is verified" claim for anyone browsing rather than running. All five pass `--run`, so
+      this is a **save, not a fix**: open each in VSCode, Run All, save. Worth doing as one
+      batch.
+      (A count below the code-cell total is normal — a cell that runs and prints nothing
+      stores no output. Re-check with the one-liner in §7 rather than assuming.)
 - [ ] Restore the stripped outputs in `ml_study_tracker_2_classical_ml.ipynb` from git?
-- [ ] Is `catboost` / `shap` / `imbalanced-learn` acceptable as extra dependencies, or should
-      every notebook stay within numpy/pandas/matplotlib/scipy/sklearn?
+- [x] ~~Is `catboost` / `shap` / `imbalanced-learn` acceptable as extra dependencies?~~
+      **Yes, sparingly.** NB-05 uses catboost/xgboost/lightgbm, NB-11 uses `imbalanced-learn`.
+      The convention: the install cell handles it, and anything essential is also implemented
+      from scratch (NB-11 §1.4 writes SMOTE in four lines) so the lesson survives without it.
+      NB-12 will need `shap` on the same terms.
