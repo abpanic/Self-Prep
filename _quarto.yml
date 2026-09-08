@@ -114,6 +114,8 @@ website:
               text: "02 · Strings & String Algorithms"
             - href: DSA-Zero-to-Hero/hashing_zero_to_hero.ipynb
               text: "03 · Hashing & Hash Tables"
+            - href: DSA-Zero-to-Hero/linked_lists_zero_to_hero.ipynb
+              text: "04 · Linked Lists"
         - href: DSA-Zero-to-Hero/plan.qmd
           text: "Build plan & status"
 

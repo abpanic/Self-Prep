@@ -112,7 +112,7 @@ the owner to close the file first.
 | 01 | **Arrays & Dynamic Arrays** | `arrays_zero_to_hero.ipynb` | ✅ | 43 (21 code) | ✅ struct + run |
 | 02 | **Strings & String Algorithms** | `strings_zero_to_hero.ipynb` | ✅ | 39 (18 code) | ✅ struct + run |
 | 03 | **Hashing & Hash Tables** | `hashing_zero_to_hero.ipynb` | ✅ | 58 (23 code) | ✅ struct + run |
-| 04 | **Linked Lists** | `linked_lists_zero_to_hero.ipynb` | ⬜ | — | — |
+| 04 | **Linked Lists** | `linked_lists_zero_to_hero.ipynb` | ✅ | 56 (21 code) | ✅ struct + run |
 | 05 | **Stacks, Queues & Deques** | `stacks_queues_zero_to_hero.ipynb` | ⬜ | — | — |
 | 06 | **Trees & Traversals** | `trees_zero_to_hero.ipynb` | ⬜ | — | — |
 | 07 | **Binary Search Trees** | `bst_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**4 of 23 done.**
+**5 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -587,15 +587,49 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 
 - **Bad at:** ordering, range queries, worst-case guarantees, memory overhead.
 
-### NB-04 — Linked Lists ⬜
-- **Unique theory:** node-and-pointer layout; singly/doubly/circular; **sentinel nodes** and how
-  much special-case code they delete; pointer surgery done carefully.
-- **Must cover:** fast/slow pointers with the cycle-detection proof (why Floyd's tortoise and hare
-  must meet); reversal iteratively and recursively; merging.
-- **Signature difficulty:** **linked lists are usually the wrong answer.** Measure traversal
-  against an array of the same length; the cache-miss gap is order-of-magnitude. Then state the
-  cases where they genuinely win — O(1) splice with a held reference, LRU caches, intrusive lists.
-- **Java angle:** `LinkedList` vs `ArrayList` benchmarked; why the JDK's own docs discourage it.
+### NB-04 — Linked Lists ✅
+**56 cells (21 code, 35 markdown). Structure clean; all 21 cells run under warnings-as-errors;
+Java at `-Xlint:all -Werror`; every number audited against printed output.**
+
+- **Unique theory:** node layout and per-element cost measured; singly and doubly linked lists
+  built from scratch with invariants asserted after every operation; **sentinel nodes** with the
+  branch saving *counted in bytecode*.
+- **Covered:** reversal (iterative and recursive, with the recursion limit measured), **Floyd's
+  cycle detection with the proof**, merge-by-splicing with a stability check, and the LRU cache.
+- **Signature difficulty (§3):** linked lists are usually the wrong answer — traversal, indexing,
+  and the workloads where they genuinely win, ending in a three-condition decision rule.
+- **Java angle:** `int[]` vs `ArrayList` vs `LinkedList` benchmarked; `ArrayDeque` beating
+  `LinkedList` at queueing; why the JDK discourages it.
+
+**Headline measurements** (timings move between machines, so the prose states shapes and ranges):
+
+| Measurement | Result |
+|---|---|
+| Per-element memory | list slot **8 B**, node with `__slots__` **48 B**, without **136 B**, doubly **56 B** |
+| Node address gap, allocated in link order | **48 bytes** — exactly one node, packed adjacent |
+| Python traversal, scattered vs in-order nodes | **2.3×**, identical structure, layout alone |
+| Java sum of 1M: `int[]` / `ArrayList` / `LinkedList` | 1× / **~9×** / **~30×** |
+| Java `get(i)`, 20k random reads | `ArrayList` <1 ms, `LinkedList` **>1 s — 1,400×** |
+| Bulk removal via iterator (Java) | LinkedList wins **9× → 55× → 247×**, growing |
+| Delete-every-other, counted (Python) | linked **n writes** vs array **~n²/4 moves**; ratio 2,500× → 20,000× |
+| Sentinel branch count (bytecode) | **7 vs 3** total, **4 vs 0** structural, `unlink` **2 vs 0** |
+| Recursive reversal | fails at **n = 1,000**; iterative does 2,000,000 in 0.16 s |
+
+**Two predictions were wrong and the measurements were kept:**
+
+- **A 2-and-4 walker does not miss cycles.** I claimed it fails on odd-length cycles; testing 820
+  cycles × 6 step-pairs found **zero** detection failures for any pair. Once both pointers are in
+  the cycle, $(b-a)k \equiv 0 \pmod c$ holds at $k=c$ for *any* unequal speeds. What actually
+  breaks is the **entry-finding phase**: (1,3), (3,5) and (1,4) reported the wrong entry on 253,
+  306 and 205 of 820 cycles, while (1,2), (2,4) and (2,3) were always right — the pattern is
+  exactly whether $(b-a)$ divides $a$. The section now teaches that instead, which is a better
+  point than the one I planned.
+- **Scattering nodes does not slow Java down.** Two attempts (ballast between allocations, two
+  interleaved lists) both made traversal *faster* (0.63×, 0.73×). The JVM's compacting collector
+  relocates live objects in reference order, so the scattering does not survive to be measured.
+  CPython never moves objects, which is why the same experiment gives a clean 2.3× there. The
+  Java scattered row was removed from the main table and the finding became its own cell.
+
 - **Bad at:** indexing, locality, memory per element.
 
 ### NB-05 — Stacks, Queues & Deques ⬜
@@ -839,6 +873,35 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 ## 11. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-08 (NB-04)
+- **NB-04 Linked Lists: COMPLETE.** 56 cells (21 code, 35 markdown). Structure clean, all 21 cells
+  run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number audited. **5 of 23.**
+- **Two of my own predictions were refuted by the demos written to confirm them**, and both
+  refutations made better sections than the originals. Details in the brief; in short, (a) *any*
+  two unequal walker speeds detect a cycle — what actually depends on 1-and-2 is the entry-finding
+  phase, and the governing condition is whether (b-a) divides a; (b) scattering a Java LinkedList's
+  nodes makes traversal *faster*, because the JVM's compacting collector relays them out in
+  reference order, while CPython never moves objects. Rule 8 says fix the demo or rewrite the
+  prose; here the honest move was to rewrite the claim and keep the measurement, twice.
+- **The branch-count measurement had to change instrument.** `inspect.getsource` cannot see classes
+  defined in an exec'd notebook cell, so counting sentinel savings by reading source text failed
+  outright. Counting `POP_JUMP_IF*` opcodes with `dis` works under exec, is objective, and is a
+  better measurement anyway. It also corrected my number: 7 vs 3 branches, 4 vs 0 structural, not
+  the "11 vs 0" I had written from hand-numbered comments.
+- **The O(n)-vs-O(n log n) timing wall appeared again** on the delete-with-held-reference demo and
+  was resolved the NB-03 way: count the operations. Pointer writes vs element moves is exact
+  (n vs ~n²/4), gives a ratio that doubles per size step, and needs no fit at all. This is now the
+  standard move and it has not failed yet.
+- **The signature difficulty came out more nuanced than the brief predicted.** The brief said the
+  cache-miss gap would be order-of-magnitude; in Python it is only ~1.5x against an equivalent
+  loop, because CPython's list is itself an array of pointers to boxed ints, so both sides chase
+  pointers. The order-of-magnitude claim is true in Java (~30x) and the notebook now measures both
+  and explains why they differ, rather than quoting whichever supports the thesis.
+- **Stored outputs and hygiene:** 30 outputs via nbclient, no stderr, output scan finds no leaked
+  paths, no bare `---` hrules, Quarto renders, structure re-verified.
+- **Next:** NB-05 Stacks, Queues & Deques — where §3.3's `ArrayDeque` result gets its own notebook
+  and the circular buffer that beat `LinkedList` at queueing is built from scratch.
 
 ### 2026-09-08 (NB-03)
 - **NB-03 Hashing & Hash Tables: COMPLETE.** 58 cells (23 code, 35 markdown). Structure clean,

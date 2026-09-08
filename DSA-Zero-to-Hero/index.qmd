@@ -5,7 +5,7 @@ toc: true
 ---
 
 ::: {.callout-note}
-## 4 of 23 built
+## 5 of 23 built
 
 **[NB-00 Complexity & Amortised Analysis](complexity_zero_to_hero.ipynb)** is complete and
 verified. It is the one to read first: it builds `dsa_toolkit.py`, the harness every other
@@ -30,7 +30,12 @@ textbook load-factor formulas, and then constructs the input that makes a `dict`
 the twist that Python and Java are each wide open to the attack the other shrugs off. It is the
 notebook where "expected O(1)" stops being a slogan and becomes a claim with an attacker attached.
 
-The remaining 19 are planned. The [build plan](plan.qmd) is the working document and is
+**[NB-04 Linked Lists](linked_lists_zero_to_hero.ipynb)** builds the structure properly and then
+makes the case against it: `get(i)` is over a thousand times slower than an array's, and the three
+conditions under which a linked list is still the right choice are narrow enough to check. Two of
+its own predictions were refuted by its own measurements, and both refutations are kept.
+
+The remaining 18 are planned. The [build plan](plan.qmd) is the working document and is
 published as-is, including its open questions.
 :::
 
@@ -72,7 +77,7 @@ correctness and cost are *decidable* — so they get tested rather than asserted
 Harness](complexity_zero_to_hero.ipynb) ✅
 
 **Linear structures** — [01 Arrays & Dynamic Arrays](arrays_zero_to_hero.ipynb) ✅ ·
-[02 Strings & String Algorithms](strings_zero_to_hero.ipynb) ✅ · [03 Hashing & Hash Tables](hashing_zero_to_hero.ipynb) ✅ · 04 Linked Lists ·
+[02 Strings & String Algorithms](strings_zero_to_hero.ipynb) ✅ · [03 Hashing & Hash Tables](hashing_zero_to_hero.ipynb) ✅ · [04 Linked Lists](linked_lists_zero_to_hero.ipynb) ✅ ·
 05 Stacks, Queues & Deques
 
 **Trees** — 06 Trees & Traversals · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
