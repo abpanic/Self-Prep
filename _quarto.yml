@@ -118,6 +118,10 @@ website:
               text: "04 · Linked Lists"
             - href: DSA-Zero-to-Hero/stacks_queues_zero_to_hero.ipynb
               text: "05 · Stacks, Queues & Deques"
+        - section: "Trees"
+          contents:
+            - href: DSA-Zero-to-Hero/trees_zero_to_hero.ipynb
+              text: "06 · Trees & Traversals"
         - href: DSA-Zero-to-Hero/plan.qmd
           text: "Build plan & status"
 

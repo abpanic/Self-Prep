@@ -114,7 +114,7 @@ the owner to close the file first.
 | 03 | **Hashing & Hash Tables** | `hashing_zero_to_hero.ipynb` | ✅ | 58 (23 code) | ✅ struct + run |
 | 04 | **Linked Lists** | `linked_lists_zero_to_hero.ipynb` | ✅ | 56 (21 code) | ✅ struct + run |
 | 05 | **Stacks, Queues & Deques** | `stacks_queues_zero_to_hero.ipynb` | ✅ | 50 (18 code) | ✅ struct + run |
-| 06 | **Trees & Traversals** | `trees_zero_to_hero.ipynb` | ⬜ | — | — |
+| 06 | **Trees & Traversals** | `trees_zero_to_hero.ipynb` | ✅ | 41 (15 code) | ✅ struct + run |
 | 07 | **Binary Search Trees** | `bst_zero_to_hero.ipynb` | ⬜ | — | — |
 | 08 | **Balanced Trees & B-Trees** | `balanced_trees_zero_to_hero.ipynb` | ⬜ | — | — |
 | 09 | **Heaps & Priority Queues** | `heaps_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**6 of 23 done.**
+**7 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -679,14 +679,48 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 
 - **Bad at:** random access, searching.
 
-### NB-06 — Trees & Traversals ⬜
-- **Unique theory:** the recursive definition and why it makes recursion the natural tool; the
-  four traversals; the **explicit-stack conversion** for each; **Morris traversal** for O(1) space.
-- **Must cover:** height/depth/diameter; level order with BFS; recursion → iteration.
-- **Signature difficulty:** **Python's recursion limit is a real constraint.** Build a degenerate
-  10,000-node tree, hit `RecursionError`, then fix it with an explicit stack — and compare against
-  Java's stack depth on the same input.
-- **Java angle:** default thread stack size, `-Xss`, `StackOverflowError`.
+### NB-06 — Trees & Traversals ✅
+**41 cells (15 code, 26 markdown). Structure clean; all 15 cells run under warnings-as-errors;
+Java at `-Xlint:all -Werror`; every number audited against printed output.**
+
+- **Unique theory:** the recursive definition and the convention that deletes the special case; the
+  four traversals; the **explicit-stack conversion** for each, differential-tested; **Morris
+  traversal** with its restoration property verified.
+- **Covered:** height/depth, diameter, BFS level variants, serialise/deserialise round-tripped as
+  trees rather than strings.
+- **Signature difficulty (§3):** recursion depth as a real constraint, measured on both runtimes.
+- **Java angle:** per-thread stack size, `StackOverflowError` as an `Error`, and why the depth is a
+  deployment property rather than a language one.
+
+**Headline measurements:**
+
+| Measurement | Result |
+|---|---|
+| Recursive traversal, **degenerate** tree | dies at exactly **n = 1,000** |
+| Recursive traversal, **balanced** tree | **1,000,000 nodes fine** (height 19) |
+| Explicit-stack peak size | exactly **height + 1** — the same storage, moved to the heap |
+| Morris restores the tree | **3,000/3,000** trees structurally identical afterwards |
+| JVM default thread | **~23,000 frames**; 64 MB reaches millions |
+| CPython default | **1,000 frames** — roughly 23× less than the JVM |
+
+**The finding that reframes the section:** the folk rule "avoid recursion on large inputs" is
+wrong in a way that matters. **The 1,000-node degenerate tree crashes; the 1,000,000-node balanced
+tree does not.** The limit is on *depth*, so the right rule is "ask what bounds the height" — and
+since a BST built from sorted input is degenerate (NB-07), the height is frequently not yours to
+choose. That is the "who chooses the input?" question from NB-02 §3, NB-03 §3 and NB-05 §3.3
+arriving a fourth time, and it is now an explicit through-line.
+
+**Two smaller things worth keeping:**
+
+- **§1.1 hit the recursion limit while merely describing the tree.** Computing `height` of a
+  1,000-node degenerate tree raised `RecursionError` before any algorithm had been written. Rather
+  than dodging it with a smaller size, the cell now catches and prints it — the constraint
+  introduces itself.
+- **Morris's restoration is tested, not asserted.** The output being correct is necessary and not
+  sufficient: an algorithm whose method is vandalism must be shown to put everything back, so the
+  test compares structural fingerprints before and after. It also surfaced the caveat that matters
+  in practice — abandoning a Morris walk part-way leaves the tree genuinely corrupted.
+
 - **Bad at:** anything needing an ordering guarantee without the BST invariant (NB-07).
 
 ### NB-07 — Binary Search Trees ⬜
@@ -910,6 +944,42 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 ## 11. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-08 (NB-06)
+- **NB-06 Trees & Traversals: COMPLETE.** 41 cells (15 code, 26 markdown). Structure clean, all 15
+  cells run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number audited.
+  **7 of 23.**
+- **The signature difficulty measured better than the brief specified.** The brief said: build a
+  degenerate 10,000-node tree, hit `RecursionError`, fix with an explicit stack. Doing that plus
+  the *balanced* comparison produces the sharper result — a 1,000-node degenerate tree crashes
+  while a 1,000,000-node balanced tree does not, so the tree a thousand times smaller is the one
+  that fails. That single pair kills the folk rule ("avoid recursion on large inputs") and replaces
+  it with the correct one ("ask what bounds the height"), which is the version that actually
+  transfers to NB-07 and NB-08.
+- **§1.1 hit the recursion limit uninvited**, computing `height` on a 1,000-node degenerate tree
+  before any algorithm had been introduced. I kept it: the cell now catches and prints the error,
+  so the constraint introduces itself rather than being announced two parts later. This is the
+  second time a notebook's own scaffolding demonstrated its subject (NB-05 §3.1's invariant caught
+  the prose), and both times keeping the accident beat tidying it away.
+- **Morris traversal is verified on the property that matters.** Correct output is necessary and
+  insufficient for an algorithm whose method is temporarily vandalising the input, so the test
+  compares structural fingerprints before and after across 3,000 trees. Writing that test is what
+  surfaced the practical caveat — abandoning a Morris walk part-way (an exception, a `break`, an
+  unexhausted generator) leaves threads in place and the tree genuinely corrupted — which is now
+  the reason the notebook gives for preferring the explicit stack.
+- **The "who chooses the input?" theme is now explicit and cross-referenced.** NB-02 §3 (naive
+  matching), NB-03 §3 (hash flooding), NB-05 §3.3 (bounded vs data-dependent cost) and NB-06 §3.1
+  (tree height) are four independent arrivals at the same question. Later notebooks should keep
+  citing the chain rather than re-deriving it.
+- **Java measurement note:** `run_java` cannot pass `-Xss`, so §3.3 probes depth by constructing a
+  `Thread` with an explicit `stackSize` instead. More portable, and it shows the relationship
+  between bytes and frames directly. The absolute counts move between runs, so the prose gives
+  orders of magnitude.
+- **Stored outputs and hygiene:** 20 outputs via nbclient, no stderr, no leaked paths, no bare
+  `---` hrules, structure re-verified.
+- **Next:** NB-07 Binary Search Trees — where the ordering invariant this notebook kept saying was
+  missing finally arrives, and where "a BST built from sorted input is degenerate" makes §3's
+  height problem concrete.
 
 ### 2026-09-08 (NB-05)
 - **NB-05 Stacks, Queues & Deques: COMPLETE.** 50 cells (18 code, 32 markdown). Structure clean,
