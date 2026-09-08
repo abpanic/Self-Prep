@@ -127,13 +127,14 @@ is stress-tested against a brute-force reference, **Python and Java are written 
 and cross-checked on identical inputs, every complexity is *measured* at doubling sizes, and
 every invariant is asserted in code.
 
-**3 of 23 notebooks complete.** Read them in order; each assumes the ones above it.
+**4 of 23 notebooks complete.** Read them in order; each assumes the ones above it.
 
 | # | Notebook | Topic |
 |---|---|---|
 | 00 | [`complexity_zero_to_hero.ipynb`](DSA-Zero-to-Hero/complexity_zero_to_hero.ipynb) | Big-O/Ω/Θ, the cost model and where it lies, amortised analysis three ways, the Master theorem verified by counting — and it builds `dsa_toolkit.py`, the harness the rest import |
 | 01 | [`arrays_zero_to_hero.ipynb`](DSA-Zero-to-Hero/arrays_zero_to_hero.ipynb) | Contiguity and the address formula, the dynamic array from scratch in both languages, the growth factor priced as a trade, the boxing tax, cache locality measured at 8× |
 | 02 | [`strings_zero_to_hero.ipynb`](DSA-Zero-to-Hero/strings_zero_to_hero.ipynb) | Immutability and what it costs, the concatenation trap measured on two axes, KMP and the Z-algorithm, Rabin-Karp and the verification step people forget, and why `len()` cannot tell you how many characters there are |
+| 03 | [`hashing_zero_to_hero.ipynb`](DSA-Zero-to-Hero/hashing_zero_to_hero.ipynb) | Hash functions measured for uniformity, chaining and open addressing built from scratch, load factor against Knuth's formulas, the core map patterns, and the adversarial input that turns a `dict` quadratic — each language exposed where the other is safe |
 
 **Start with 00 whatever you are after.** It establishes the habit the whole series runs on:
 *a complexity is something you measure, not something you assert.* The

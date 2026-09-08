@@ -112,6 +112,8 @@ website:
               text: "01 · Arrays & Dynamic Arrays"
             - href: DSA-Zero-to-Hero/strings_zero_to_hero.ipynb
               text: "02 · Strings & String Algorithms"
+            - href: DSA-Zero-to-Hero/hashing_zero_to_hero.ipynb
+              text: "03 · Hashing & Hash Tables"
         - href: DSA-Zero-to-Hero/plan.qmd
           text: "Build plan & status"
 

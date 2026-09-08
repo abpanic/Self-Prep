@@ -10,7 +10,7 @@ The companion to [`../ML-Zero-to-Hero/`](../ML-Zero-to-Hero/), with a stricter q
 because in this domain correctness and cost are *decidable*, so they get tested rather than
 asserted.
 
-**Progress: 3 of 23 complete.**
+**Progress: 4 of 23 complete.**
 
 ***
 
@@ -21,6 +21,7 @@ asserted.
 | **00** | [`complexity_zero_to_hero.ipynb`](complexity_zero_to_hero.ipynb) | Big-O/Ω/Θ and what each is *for*, the cost model and **where it lies**, the doubling experiment, **amortised analysis three ways**, recurrences and the Master theorem **verified by counting**, and the stack depth you forgot to budget for | ✅ |
 | **01** | [`arrays_zero_to_hero.ipynb`](arrays_zero_to_hero.ipynb) | Contiguity and the address formula, **the dynamic array from scratch in both languages**, the growth factor priced as a trade, the boxing tax, prefix sums and difference arrays derived rather than memorised — and **cache locality measured at 8x** | ✅ |
 | **02** | [`strings_zero_to_hero.ipynb`](strings_zero_to_hero.ipynb) | Immutability and what it costs, **the concatenation trap measured on two axes** — CPython's `+=` is exactly O(n) under a megabyte and exactly O(n²) above it — KMP, the Z-algorithm and Rabin-Karp with the verification step people forget, and **why `len()` cannot tell you how many characters there are** | ✅ |
+| **03** | [`hashing_zero_to_hero.ipynb`](hashing_zero_to_hero.ipynb) | What a hash function must guarantee (uniformity measured with a χ² test), **chaining and open addressing both built from scratch**, load factor measured against Knuth's formulas, the four core map patterns — and **the adversarial input that turns a `dict` quadratic**, with each of Python and Java defending the axis the other leaves open | ✅ |
 
 **Read 00 first, whatever you are after.** It builds
 [`dsa_toolkit.py`](dsa_toolkit.py) — the harness every other notebook imports — and it
@@ -29,7 +30,7 @@ something you assert.*
 
 ## Still to come
 
-**Linear structures** — 03 Hashing & Hash Tables · 04 Linked Lists ·
+**Linear structures** — 04 Linked Lists ·
 05 Stacks, Queues & Deques
 
 **Trees** — 06 Trees & Traversals · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·

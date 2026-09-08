@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Check that every relative markdown link in the series resolves to a real file.
 
-Covers the two READMEs, the plan, and the markdown cells of every notebook in
-ML-Zero-to-Hero/. External links (http/https/mailto) and bare anchors are skipped.
+Covers the root and per-series READMEs, the DSA plan, and the markdown cells of
+every notebook in both ML-Zero-to-Hero/ and DSA-Zero-to-Hero/. External links
+(http/https/mailto) and bare anchors are skipped.
 
 Run from the repo root after adding, renaming or moving a notebook:
 
@@ -19,8 +20,13 @@ import sys
 LINK = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 SKIP_PREFIXES = ("http://", "https://", "#", "mailto:")
 
-DOCS = ["README.md", "ZERO_TO_HERO_PLAN.md", "ML-Zero-to-Hero/README.md"]
-NOTEBOOK_DIR = "ML-Zero-to-Hero"
+DOCS = [
+    "README.md",
+    "ML-Zero-to-Hero/README.md",
+    "DSA-Zero-to-Hero/README.md",
+    "DSA-Zero-to-Hero/DSA_ZERO_TO_HERO_PLAN.md",
+]
+NOTEBOOK_DIRS = ["ML-Zero-to-Hero", "DSA-Zero-to-Hero"]
 
 
 def collect(root):
@@ -30,16 +36,17 @@ def collect(root):
         if os.path.exists(path):
             yield rel, io.open(path, encoding="utf-8").read()
 
-    nbdir = os.path.join(root, NOTEBOOK_DIR)
-    if not os.path.isdir(nbdir):
-        return
-    for name in sorted(os.listdir(nbdir)):
-        if not name.endswith(".ipynb"):
+    for nbdir_rel in NOTEBOOK_DIRS:
+        nbdir = os.path.join(root, nbdir_rel)
+        if not os.path.isdir(nbdir):
             continue
-        nb = json.load(io.open(os.path.join(nbdir, name), encoding="utf-8"))
-        text = "\n".join("".join(c["source"]) for c in nb["cells"]
-                         if c["cell_type"] == "markdown")
-        yield NOTEBOOK_DIR + "/" + name, text
+        for name in sorted(os.listdir(nbdir)):
+            if not name.endswith(".ipynb"):
+                continue
+            nb = json.load(io.open(os.path.join(nbdir, name), encoding="utf-8"))
+            text = "\n".join("".join(c["source"]) for c in nb["cells"]
+                             if c["cell_type"] == "markdown")
+            yield nbdir_rel + "/" + name, text
 
 
 def main():

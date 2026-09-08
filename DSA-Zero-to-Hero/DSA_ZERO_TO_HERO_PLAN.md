@@ -111,7 +111,7 @@ the owner to close the file first.
 | 00 | **Complexity, Amortised Analysis & the Measurement Harness** | `complexity_zero_to_hero.ipynb` | ✅ | 54 (28 code) | ✅ struct + run |
 | 01 | **Arrays & Dynamic Arrays** | `arrays_zero_to_hero.ipynb` | ✅ | 43 (21 code) | ✅ struct + run |
 | 02 | **Strings & String Algorithms** | `strings_zero_to_hero.ipynb` | ✅ | 39 (18 code) | ✅ struct + run |
-| 03 | **Hashing & Hash Tables** | `hashing_zero_to_hero.ipynb` | ⬜ | — | — |
+| 03 | **Hashing & Hash Tables** | `hashing_zero_to_hero.ipynb` | ✅ | 58 (23 code) | ✅ struct + run |
 | 04 | **Linked Lists** | `linked_lists_zero_to_hero.ipynb` | ⬜ | — | — |
 | 05 | **Stacks, Queues & Deques** | `stacks_queues_zero_to_hero.ipynb` | ⬜ | — | — |
 | 06 | **Trees & Traversals** | `trees_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**3 of 23 done.**
+**4 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -545,15 +545,46 @@ around it.
 
 - **Bad at:** Unicode-correct operations, which almost every implementation gets wrong.
 
-### NB-03 — Hashing & Hash Tables ⬜
-- **Unique theory:** what a hash function must guarantee; **chaining vs open addressing** with
-  both implemented; load factor and the resize policy; why expected O(1) is not worst-case O(1).
-- **Must cover:** the frequency-map, duplicate-detection and grouping patterns as applications,
-  not as the topic.
-- **Signature difficulty:** **the adversarial input.** Construct colliding keys and measure the
-  table degrade to O(n); connect to real hash-flooding DoS and to Python's `PYTHONHASHSEED`.
-- **Java angle:** `hashCode`/`equals` contract and what breaks when you violate it; `HashMap`'s
-  treeification at 8 entries per bucket; why mutable keys are a bug.
+### NB-03 — Hashing & Hash Tables ✅
+**58 cells (23 code, 35 markdown). Structure clean; all 23 cells run under warnings-as-errors;
+Java at `-Xlint:all -Werror`; every number audited against printed output.**
+
+- **Unique theory:** what a hash function must guarantee (uniformity measured with a $\chi^2$
+  test); collisions as the birthday bound; **chaining and open addressing both built from
+  scratch**; load factor measured against Knuth's formulas.
+- **Covered:** the canonical-key, complement-lookup, prefix-sums-in-a-map and membership-set
+  patterns as Part 2 applications, each with its named reframing.
+- **Signature difficulty (§3):** the adversarial input, in full. Constructs colliding keys for
+  both Java's `String.hashCode` and CPython's `int` hash, measures CPython's `dict` going
+  quadratic, and shows each language defends the axis the other leaves open.
+- **Java angle:** the `hashCode`/`equals` contract (all three violations measured), treeification,
+  and mutable keys — with `javac` itself catching the missing-`hashCode` bug under `-Werror`.
+
+**The findings that shaped it:**
+
+| Measurement | Result |
+|---|---|
+| Four hash functions, $\chi^2/df$ (target 1.0) | first-char **766**, sum-of-chars **51**, poly-31 **0.97**, Python **~1.0** |
+| First collision into 4,096 buckets | **~80 keys** (birthday bound $\sqrt{\pi m/2}$), matched to 3% |
+| Linear probing at $\alpha=0.95$ | **~180 probes** vs chaining's **~1**, matching $\frac12(1+(1-\alpha)^{-2})$ |
+| Chaining at $\alpha=8$ | **8.0 probes**, ratio to theory 0.999 |
+| CPython `dict`, colliding int keys | **$O(n^2)$**, thousands× slower at n=16k, quadrupling per doubling |
+| Same colliding-string family, Python vs Java | Python **~1.0×** (SipHash), Java **~10×** flat (treeification) |
+
+- **The open-addressing delete bug is caught by the stress test**, minimised to three operations
+  (`put -10, put 14, del -10` → "live key 14 not reachable"). The buggy version keeps its counters
+  consistent, so only the *reachability* invariant catches it — a structural invariant, not a
+  numeric one.
+- **The `hashCode`/`equals` contract violation is caught by `javac` itself.** `-Xlint:all -Werror`
+  refuses to compile a class that overrides `equals` without `hashCode`; you have to
+  `@SuppressWarnings` to demonstrate the runtime damage. The compiler flag is worth more than the
+  knowledge.
+- **Two measurement confounds caught during the audit, both mine.** (1) The two-sum O(n) timing
+  wandered between O(n) and O(n log n) run-to-run; switched to counting elements examined (exactly
+  2.00 per doubling) per NB-00 §1.7. (2) The "Python is immune to the Java collision family" cell
+  first showed a spurious 10× because it timed string *construction*; fixed by building keys in
+  `setup` and comparing against same-length control keys, giving the true ~1.0×.
+
 - **Bad at:** ordering, range queries, worst-case guarantees, memory overhead.
 
 ### NB-04 — Linked Lists ⬜
@@ -809,6 +840,42 @@ around it.
 
 Append a dated entry every session. Newest first.
 
+### 2026-09-08 (NB-03)
+- **NB-03 Hashing & Hash Tables: COMPLETE.** 58 cells (23 code, 35 markdown). Structure clean,
+  all 23 cells run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number audited
+  against printed output. **4 of 23.**
+- **The signature difficulty landed as a two-sided story that was not in the brief.** The brief
+  said "construct colliding keys, measure O(n) degradation, connect to PYTHONHASHSEED". What the
+  measurement actually showed is sharper: Python and Java each defend exactly the axis the other
+  leaves open — Python randomises string hashes (so the one-line Java collision family is
+  harmless) but leaves int hashes fixed (so `hash(i)==i mod 2^61-1` floods the dict to O(n^2));
+  Java can't randomise its published String.hashCode but treeifies buckets (so the same attack is
+  ~10x flat, not quadratic). The notebook now has a three-row comparison table as its climax.
+- **Two of my own measurement confounds were caught in the audit, both the same species as
+  NB-02's join bug.** (1) Two-sum's O(n) timing wandered across the O(n)/O(n log n) boundary
+  run-to-run; I switched to counting elements examined (exactly 2.00 per doubling), per NB-00
+  §1.7. (2) The "Python shrugs off the Java collision family" cell first reported a spurious ~10x
+  because it timed the string *construction*, not the insertion, and the colliding keys are longer
+  strings; fixed by building keys in `setup` and comparing against a same-length control. Both are
+  the "measure the thing you are claiming about" lesson again — third and fourth instances now.
+- **Two bugs are caught by tooling rather than by me, and both became teaching moments.** The
+  open-addressing delete-without-tombstone bug is caught by the stress test's *reachability*
+  invariant (minimised to three operations); the buggy version keeps its counters consistent, so
+  a numeric invariant would have missed it. The `equals`-without-`hashCode` bug is caught by
+  `javac -Xlint:all -Werror` outright — you have to `@SuppressWarnings` to even demonstrate the
+  runtime damage.
+- **A path leak in stored output, caught by the scan and fixed at source.** The deliberate `javac`
+  error prints the temp compile directory; the cell now strips it to the bare `BrokenKey.java`
+  filename with a regex. Same class as the ML series' AppData leaks — the output scan is now part
+  of the per-notebook close, not an afterthought.
+- **Stored-outputs backlog stays closed:** NB-03 executed with `nbclient` (50 outputs), stderr
+  dropped, no leaked paths, structure re-verified clean. NB-00/01/02 already carry outputs.
+- **The NB-00 §3.2 / NOT SEPARABLE story recurred once more** (two-sum), and this time the harness
+  verdict plus the count-operations fallback handled it without any prose gymnastics. The pattern
+  is now fully routinised: if timing won't separate O(n) from O(n log n), count the operations.
+- **Next:** NB-04 Linked Lists — where §1.3's chains and Practice 4's LRU cache both come due, and
+  the cache-locality theme from NB-01 §3 returns as the linked list's central weakness.
+
 ### 2026-09-08 (NB-02)
 - **NB-02 Strings & String Algorithms: COMPLETE.** 39 cells (18 code, 21 markdown). Structure
   clean, all 18 cells run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number
@@ -842,7 +909,7 @@ Append a dated entry every session. Newest first.
   script lives in the scratchpad; it runs each notebook from its own directory, drops every
   `stderr` stream (they carry environment paths) and preserves the file's newline style. All three
   re-verify structure-clean afterwards and the output scan finds no leaked absolute paths.
-- **Next:** NB-03 Hashing & Hash Tables, which picks up §2.4's rolling hash and its adversarial
+- **Done next:** NB-03 Hashing & Hash Tables, which picks up §2.4's rolling hash and its adversarial
   worst case as a topic in its own right.
 
 ### 2026-09-08 (NB-01)

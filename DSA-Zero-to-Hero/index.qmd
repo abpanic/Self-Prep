@@ -5,7 +5,7 @@ toc: true
 ---
 
 ::: {.callout-note}
-## 3 of 23 built
+## 4 of 23 built
 
 **[NB-00 Complexity & Amortised Analysis](complexity_zero_to_hero.ipynb)** is complete and
 verified. It is the one to read first: it builds `dsa_toolkit.py`, the harness every other
@@ -24,7 +24,13 @@ extra reference, and, separately, mere size — so the same function is exactly 
 megabyte and exactly quadratic above it. The notebook also builds KMP, the Z-algorithm and
 Rabin-Karp, and shows what happens when you skip Rabin-Karp's verification step.
 
-The remaining 20 are planned. The [build plan](plan.qmd) is the working document and is
+**[NB-03 Hashing & Hash Tables](hashing_zero_to_hero.ipynb)** takes the phrase "hash tables are
+O(1)" apart. It builds chaining and open addressing from scratch, measures both against the
+textbook load-factor formulas, and then constructs the input that makes a `dict` quadratic — with
+the twist that Python and Java are each wide open to the attack the other shrugs off. It is the
+notebook where "expected O(1)" stops being a slogan and becomes a claim with an attacker attached.
+
+The remaining 19 are planned. The [build plan](plan.qmd) is the working document and is
 published as-is, including its open questions.
 :::
 
@@ -66,7 +72,7 @@ correctness and cost are *decidable* — so they get tested rather than asserted
 Harness](complexity_zero_to_hero.ipynb) ✅
 
 **Linear structures** — [01 Arrays & Dynamic Arrays](arrays_zero_to_hero.ipynb) ✅ ·
-[02 Strings & String Algorithms](strings_zero_to_hero.ipynb) ✅ · 03 Hashing & Hash Tables · 04 Linked Lists ·
+[02 Strings & String Algorithms](strings_zero_to_hero.ipynb) ✅ · [03 Hashing & Hash Tables](hashing_zero_to_hero.ipynb) ✅ · 04 Linked Lists ·
 05 Stacks, Queues & Deques
 
 **Trees** — 06 Trees & Traversals · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
