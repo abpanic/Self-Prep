@@ -113,7 +113,7 @@ the owner to close the file first.
 | 02 | **Strings & String Algorithms** | `strings_zero_to_hero.ipynb` | ✅ | 39 (18 code) | ✅ struct + run |
 | 03 | **Hashing & Hash Tables** | `hashing_zero_to_hero.ipynb` | ✅ | 58 (23 code) | ✅ struct + run |
 | 04 | **Linked Lists** | `linked_lists_zero_to_hero.ipynb` | ✅ | 56 (21 code) | ✅ struct + run |
-| 05 | **Stacks, Queues & Deques** | `stacks_queues_zero_to_hero.ipynb` | ⬜ | — | — |
+| 05 | **Stacks, Queues & Deques** | `stacks_queues_zero_to_hero.ipynb` | ✅ | 50 (18 code) | ✅ struct + run |
 | 06 | **Trees & Traversals** | `trees_zero_to_hero.ipynb` | ⬜ | — | — |
 | 07 | **Binary Search Trees** | `bst_zero_to_hero.ipynb` | ⬜ | — | — |
 | 08 | **Balanced Trees & B-Trees** | `balanced_trees_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**5 of 23 done.**
+**6 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -632,14 +632,51 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 
 - **Bad at:** indexing, locality, memory per element.
 
-### NB-05 — Stacks, Queues & Deques ⬜
-- **Unique theory:** LIFO/FIFO as invariants; array-backed vs node-backed; the **circular buffer**;
-  the **two-stack queue** and its amortised O(1) proved by the accounting method.
-- **Must cover:** the **monotonic stack** derived from its invariant, then applied (next greater
-  element, largest rectangle in histogram, daily temperatures).
-- **Signature difficulty:** monotonic-stack problems are hard because the invariant is implicit;
-  the notebook makes it explicit and asserts it inside the loop.
-- **Java angle:** why `Stack` is legacy and `ArrayDeque` is the answer; `Queue` vs `Deque`.
+### NB-05 — Stacks, Queues & Deques ✅
+**50 cells (18 code, 32 markdown). Structure clean; all 18 cells run under warnings-as-errors;
+Java at `-Xlint:all -Werror`; every number audited against printed output.**
+
+- **Unique theory:** LIFO/FIFO as invariants; the **circular buffer** built from scratch and
+  verified against `collections.deque`; the **two-stack queue** with its amortised bound counted
+  rather than asserted.
+- **Covered:** the **monotonic stack derived from its invariant**, then applied four ways — next
+  greater element, daily temperatures, largest rectangle in a histogram, and sliding window maximum
+  (the monotonic **deque**).
+- **Signature difficulty (§3):** the invariant nobody writes down — stated, asserted inside the
+  loop, and used to prove the linear bound by counting.
+- **Java angle:** `Stack` vs `ArrayDeque` — with the usual performance argument **measured and
+  found wrong**.
+
+**Headline measurements:**
+
+| Measurement | Result |
+|---|---|
+| `list.pop(0)` queue vs `deque` | O(n²) vs O(n); ratio **13× → 24× → 47× → 91×**, doubling |
+| `RingDeque` (ours, pure Python) | **O(n)**, err 0.008; beats `list` from n≈20k, ratio doubling |
+| Two-stack queue, amortised | **exactly 2.00 movements/op** at n = 1k…1M |
+| Two-stack queue, worst single op | **200,001 movements**, next op **1** |
+| Monotonic stack, total work | **≤ 2 ops/element always**: increasing 2.00, decreasing 1.00, all-equal 1.00 |
+| Brute force vs stack, **decreasing** input | brute **O(n²)** (err 0.011), stack O(n), 1.00 ops/elem |
+| Brute force vs stack, **increasing** input | brute **O(n)** (err 0.029) — same class as the stack |
+
+**Three findings worth carrying forward:**
+
+- **The invariant assertion caught the notebook's own prose.** §3.1's first draft asserted the
+  monotonic stack is *strictly decreasing*; the assertion failed on `[0, 0]` within seconds, because
+  popping on `<` never evicts an equal value. The correct invariant is **non-increasing**. This is
+  now the section's opening argument for writing invariants as code.
+- **The two bug demos are caught by different tools, and neither catches both.** `if` instead of
+  `while` breaks the structure and the **invariant** fires on a 3-element input; `<=` instead of
+  `<` leaves a perfectly well-formed monotonic stack answering a different question, and only the
+  **differential test** catches it. Complements NB-04 §1.4, where the reachability invariant was
+  the only thing that fired.
+- **The "monotonic stack turns O(n²) into O(n)" framing is wrong for half of all inputs.** The two
+  algorithms have *opposite* worst cases: on decreasing input brute force is O(n²) and the stack
+  pops nothing; on increasing input brute force is **O(n)** — the same class as the stack — while
+  the stack does its maximum. The honest claim is that the stack's cost is **bounded regardless of
+  input** while the brute force's is **a property of the data**, which is the NB-02 §3 / NB-03 §3
+  theme arriving a third time.
+
 - **Bad at:** random access, searching.
 
 ### NB-06 — Trees & Traversals ⬜
@@ -873,6 +910,43 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 ## 11. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-08 (NB-05)
+- **NB-05 Stacks, Queues & Deques: COMPLETE.** 50 cells (18 code, 32 markdown). Structure clean,
+  all 18 cells run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number audited.
+  **6 of 23.**
+- **An invariant assertion caught my own prose, which is the best possible advertisement for the
+  practice.** I wrote that a monotonic stack is "strictly decreasing"; asserting it failed on
+  `[0, 0]` in seconds, because popping on `<` never evicts an equal value. The correct statement is
+  **non-increasing**. That correction now opens §3.1 rather than being quietly fixed, because the
+  point of the section is precisely that a comment saying "strictly decreasing" is wrong forever
+  and silently while an assertion is wrong once and loudly.
+- **The two-bug demo in §3.1 is the sharpest tool-coverage illustration in the series so far.**
+  `if` instead of `while` breaks the structure, so the invariant fires on a three-element input;
+  `<=` instead of `<` leaves a perfectly well-formed monotonic stack answering a different
+  question, and only the differential test catches it. Together with NB-04 §1.4 (where only the
+  reachability invariant fired) the series now has both directions demonstrated: invariants and
+  reference implementations catch disjoint bug classes, and you need both.
+- **The signature difficulty came out inverted from the brief, again, and better for it.** The
+  brief framed monotonic stacks as O(n²)→O(n). Measuring both algorithms on both extremes shows
+  they have *opposite* worst cases: on increasing input the brute force is O(n), the same class as
+  the stack. The honest claim is about a **bounded** cost versus a **data-dependent** one, which is
+  the same lesson as NB-02 §3 (naive matching) and NB-03 §3 (hash flooding) reached a third way.
+  Three notebooks converging on "who chooses the input?" is now a deliberate through-line.
+- **A widely repeated Java claim did not survive measurement.** `Stack` being slow because
+  `Vector` is synchronized is folklore: across three trials at two sizes with heavy JIT warm-up the
+  ratio bounced either side of 1.0. Modern JITs optimise uncontended locks. The case against
+  `Stack` is entirely its API — `get(0)`, `insertElementAt` into the middle, `removeElementAt(0)`,
+  and a `toString` that prints the reverse of pop order — and the notebook makes that case instead.
+  This is the third measured correction to received wisdom (after NB-04's two).
+- **Measurement hygiene:** the §3.3 growth tables needed different size ranges per algorithm (1k–8k
+  for the quadratic brute force, 100k–800k for the stack, which is too fast to time below that).
+  Stated in the output rather than silently chosen.
+- **Stored outputs and hygiene:** 31 outputs via nbclient, no stderr, no leaked paths, no bare
+  `---` hrules, Quarto renders, structure re-verified.
+- **Next:** NB-06 Trees & Traversals — where §1.1's stack-for-depth / queue-for-breadth observation
+  becomes DFS and BFS, and Q9's "any recursion can be made iterative with an explicit stack" gets
+  built.
 
 ### 2026-09-08 (NB-04)
 - **NB-04 Linked Lists: COMPLETE.** 56 cells (21 code, 35 markdown). Structure clean, all 21 cells

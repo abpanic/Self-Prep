@@ -116,6 +116,8 @@ website:
               text: "03 · Hashing & Hash Tables"
             - href: DSA-Zero-to-Hero/linked_lists_zero_to_hero.ipynb
               text: "04 · Linked Lists"
+            - href: DSA-Zero-to-Hero/stacks_queues_zero_to_hero.ipynb
+              text: "05 · Stacks, Queues & Deques"
         - href: DSA-Zero-to-Hero/plan.qmd
           text: "Build plan & status"
 

@@ -10,7 +10,7 @@ The companion to [`../ML-Zero-to-Hero/`](../ML-Zero-to-Hero/), with a stricter q
 because in this domain correctness and cost are *decidable*, so they get tested rather than
 asserted.
 
-**Progress: 5 of 23 complete.**
+**Progress: 6 of 23 complete.**
 
 ***
 
@@ -23,6 +23,7 @@ asserted.
 | **02** | [`strings_zero_to_hero.ipynb`](strings_zero_to_hero.ipynb) | Immutability and what it costs, **the concatenation trap measured on two axes** — CPython's `+=` is exactly O(n) under a megabyte and exactly O(n²) above it — KMP, the Z-algorithm and Rabin-Karp with the verification step people forget, and **why `len()` cannot tell you how many characters there are** | ✅ |
 | **03** | [`hashing_zero_to_hero.ipynb`](hashing_zero_to_hero.ipynb) | What a hash function must guarantee (uniformity measured with a χ² test), **chaining and open addressing both built from scratch**, load factor measured against Knuth's formulas, the four core map patterns — and **the adversarial input that turns a `dict` quadratic**, with each of Python and Java defending the axis the other leaves open | ✅ |
 | **04** | [`linked_lists_zero_to_hero.ipynb`](linked_lists_zero_to_hero.ipynb) | Node layout and per-element cost measured, **sentinel nodes with the branch saving counted in bytecode**, reversal, **Floyd's cycle detection with the proof**, merging and the LRU cache — then the honest case that **linked lists are usually the wrong answer**, with the three conditions under which they are not | ✅ |
+| **05** | [`stacks_queues_zero_to_hero.ipynb`](stacks_queues_zero_to_hero.ipynb) | LIFO/FIFO as invariants, **the circular buffer built from scratch**, the two-stack queue with its amortised bound *counted* (2.00 per op, but 200,001 for one call), and the **monotonic stack derived from its invariant** then applied four ways — plus the finding that its real virtue is a bounded cost, not a faster one | ✅ |
 
 **Read 00 first, whatever you are after.** It builds
 [`dsa_toolkit.py`](dsa_toolkit.py) — the harness every other notebook imports — and it
@@ -30,8 +31,6 @@ establishes the habit the whole series runs on: *a complexity is something you m
 something you assert.*
 
 ## Still to come
-
-**Linear structures** — 05 Stacks, Queues & Deques
 
 **Trees** — 06 Trees & Traversals · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
 09 Heaps & Priority Queues

@@ -5,7 +5,7 @@ toc: true
 ---
 
 ::: {.callout-note}
-## 5 of 23 built
+## 6 of 23 built
 
 **[NB-00 Complexity & Amortised Analysis](complexity_zero_to_hero.ipynb)** is complete and
 verified. It is the one to read first: it builds `dsa_toolkit.py`, the harness every other
@@ -35,7 +35,12 @@ makes the case against it: `get(i)` is over a thousand times slower than an arra
 conditions under which a linked list is still the right choice are narrow enough to check. Two of
 its own predictions were refuted by its own measurements, and both refutations are kept.
 
-The remaining 18 are planned. The [build plan](plan.qmd) is the working document and is
+**[NB-05 Stacks, Queues & Deques](stacks_queues_zero_to_hero.ipynb)** builds the circular buffer
+that beat a linked list at queueing, counts the two-stack queue's amortised bound exactly (2.00
+movements per operation — and 200,001 for one unlucky call), and derives the monotonic stack from
+an invariant it then asserts inside the loop. That assertion caught the notebook's own prose.
+
+The remaining 17 are planned. The [build plan](plan.qmd) is the working document and is
 published as-is, including its open questions.
 :::
 
@@ -78,7 +83,7 @@ Harness](complexity_zero_to_hero.ipynb) ✅
 
 **Linear structures** — [01 Arrays & Dynamic Arrays](arrays_zero_to_hero.ipynb) ✅ ·
 [02 Strings & String Algorithms](strings_zero_to_hero.ipynb) ✅ · [03 Hashing & Hash Tables](hashing_zero_to_hero.ipynb) ✅ · [04 Linked Lists](linked_lists_zero_to_hero.ipynb) ✅ ·
-05 Stacks, Queues & Deques
+[05 Stacks, Queues & Deques](stacks_queues_zero_to_hero.ipynb) ✅
 
 **Trees** — 06 Trees & Traversals · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
 09 Heaps & Priority Queues
