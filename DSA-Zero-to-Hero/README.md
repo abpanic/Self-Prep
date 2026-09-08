@@ -10,7 +10,7 @@ The companion to [`../ML-Zero-to-Hero/`](../ML-Zero-to-Hero/), with a stricter q
 because in this domain correctness and cost are *decidable*, so they get tested rather than
 asserted.
 
-**Progress: 8 of 23 complete.**
+**Progress: 9 of 23 complete.**
 
 ***
 
@@ -26,6 +26,7 @@ asserted.
 | **05** | [`stacks_queues_zero_to_hero.ipynb`](stacks_queues_zero_to_hero.ipynb) | LIFO/FIFO as invariants, **the circular buffer built from scratch**, the two-stack queue with its amortised bound *counted* (2.00 per op, but 200,001 for one call), and the **monotonic stack derived from its invariant** then applied four ways — plus the finding that its real virtue is a bounded cost, not a faster one | ✅ |
 | **06** | [`trees_zero_to_hero.ipynb`](trees_zero_to_hero.ipynb) | The recursive definition, all four traversals **each converted to an explicit stack**, **Morris traversal with its restoration property verified**, diameter and BFS variants — and the measured finding that a 1,000-node degenerate tree crashes recursion while a **1,000,000-node balanced one does not** | ✅ |
 | **07** | [`bst_zero_to_hero.ipynb`](bst_zero_to_hero.ipynb) | The invariant stated precisely (and the usual version refuted by construction), the three delete cases, validation three ways, successor/LCA/range queries — and **degeneration measured**: the same 50,000 keys cost 14.7 comparisons per search inserted balanced and **~24,700 inserted sorted** | ✅ |
+| **08** | [`balanced_trees_zero_to_hero.ipynb`](balanced_trees_zero_to_hero.ipynb) | **AVL implemented completely** with the height bound derived (N(h) = Fib(h+3) − 1 exactly), red-black at the properties level, **B-trees built** with the disk argument measured — and the signature difficulty that a broken rotation **still produces a valid BST** | ✅ |
 
 **Read 00 first, whatever you are after.** It builds
 [`dsa_toolkit.py`](dsa_toolkit.py) — the harness every other notebook imports — and it
@@ -34,7 +35,7 @@ something you assert.*
 
 ## Still to come
 
-**Trees** — 08 Balanced Trees & B-Trees · 09 Heaps & Priority Queues
+**Trees** — 09 Heaps & Priority Queues
 
 **Specialised structures** — 10 Tries · 11 Disjoint Set Union · 12 Fenwick & Segment Trees
 

@@ -5,7 +5,7 @@ toc: true
 ---
 
 ::: {.callout-note}
-## 8 of 23 built
+## 9 of 23 built
 
 **[NB-00 Complexity & Amortised Analysis](complexity_zero_to_hero.ipynb)** is complete and
 verified. It is the one to read first: it builds `dsa_toolkit.py`, the harness every other
@@ -50,7 +50,13 @@ version of it most people recite, and then measures what happens when nothing en
 the same 50,000 keys cost 14.7 comparisons per search inserted in balanced order and about 24,700
 inserted in sorted order.
 
-The remaining 15 are planned. The [build plan](plan.qmd) is the working document and is
+**[NB-08 Balanced Trees & B-Trees](balanced_trees_zero_to_hero.ipynb)** is the answer: AVL
+implemented completely, the height bound derived exactly, B-trees built and measured against disk
+latency. Its signature difficulty is unlike the others — a broken rotation still produces a *valid*
+BST, so only a structural invariant can catch it. And the input ranking inverts: Java's `TreeMap`
+is five times faster on the sorted input that destroyed NB-07's tree.
+
+The remaining 14 are planned. The [build plan](plan.qmd) is the working document and is
 published as-is, including its open questions.
 :::
 
@@ -95,7 +101,7 @@ Harness](complexity_zero_to_hero.ipynb) ✅
 [02 Strings & String Algorithms](strings_zero_to_hero.ipynb) ✅ · [03 Hashing & Hash Tables](hashing_zero_to_hero.ipynb) ✅ · [04 Linked Lists](linked_lists_zero_to_hero.ipynb) ✅ ·
 [05 Stacks, Queues & Deques](stacks_queues_zero_to_hero.ipynb) ✅
 
-**Trees** — [06 Trees & Traversals](trees_zero_to_hero.ipynb) ✅ · [07 Binary Search Trees](bst_zero_to_hero.ipynb) ✅ · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
+**Trees** — [06 Trees & Traversals](trees_zero_to_hero.ipynb) ✅ · [07 Binary Search Trees](bst_zero_to_hero.ipynb) ✅ · [08 Balanced Trees & B-Trees](balanced_trees_zero_to_hero.ipynb) ✅ · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
 09 Heaps & Priority Queues
 
 **Specialised structures** — 10 Tries · 11 Disjoint Set Union · 12 Fenwick & Segment Trees

@@ -116,7 +116,7 @@ the owner to close the file first.
 | 05 | **Stacks, Queues & Deques** | `stacks_queues_zero_to_hero.ipynb` | ✅ | 50 (18 code) | ✅ struct + run |
 | 06 | **Trees & Traversals** | `trees_zero_to_hero.ipynb` | ✅ | 41 (15 code) | ✅ struct + run |
 | 07 | **Binary Search Trees** | `bst_zero_to_hero.ipynb` | ✅ | 38 (15 code) | ✅ struct + run |
-| 08 | **Balanced Trees & B-Trees** | `balanced_trees_zero_to_hero.ipynb` | ⬜ | — | — |
+| 08 | **Balanced Trees & B-Trees** | `balanced_trees_zero_to_hero.ipynb` | ✅ | 36 (15 code) | ✅ struct + run |
 | 09 | **Heaps & Priority Queues** | `heaps_zero_to_hero.ipynb` | ⬜ | — | — |
 | 10 | **Tries** | `tries_zero_to_hero.ipynb` | ⬜ | — | — |
 | 11 | **Disjoint Set Union** | `dsu_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**8 of 23 done.**
+**9 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -769,18 +769,56 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 
 - **Bad at:** adversarial or sorted insertion order; nothing guarantees balance.
 
-### NB-08 — Balanced Trees & B-Trees ⬜
-- **Unique theory:** the **second invariant** layered on the BST one; **AVL** with all four
-  rotations implemented and the height bound derived; **red-black** properties and why its looser
-  balance means fewer rotations; **B-trees** and the disk/page argument.
-- **Must cover:** rotations as the universal repair primitive; when each is preferred.
-- **Signature difficulty:** rotation code is where everyone gets it wrong. Every rotation is
-  followed by `check_invariant` in a randomised stress test of 10,000 mixed operations.
-- **Java angle:** `TreeMap`/`TreeSet` are red-black; measure against `HashMap` to show what
-  ordering costs.
-- **Bad at:** the constant factor versus a hash table when ordering is not needed.
-- **Note:** red-black insertion/deletion in full is long. Implement AVL completely; do red-black
-  at the properties-and-consequences level and say so plainly.
+### NB-08 — Balanced Trees & B-Trees ✅
+**36 cells (15 code, 21 markdown). Structure clean; all 15 cells run under warnings-as-errors;
+Java at `-Xlint:all -Werror`; every number audited against printed output.**
+
+- **Unique theory:** the second invariant; **AVL complete** (all four rotations, insert and delete)
+  with the height bound derived; **red-black** at the properties level; **B-trees** built (search
+  and insert) with the disk argument measured.
+- **Covered:** rotations as the universal repair primitive, bulk loading, augmentation surviving
+  rotation, and the choice between all of them.
+- **Signature difficulty (§3):** rotation code — three realistic bugs, each caught by the invariant,
+  and the finding that each manifests on *different* input.
+- **Java angle:** `TreeMap` vs `HashMap` measured, plus the inversion described below.
+- **Followed the brief's note:** red-black insert/delete is deliberately not implemented and the
+  notebook says so plainly and explains why. Same for B-tree delete.
+
+**Headline measurements:**
+
+| Measurement | Result |
+|---|---|
+| AVL height, **sorted** input | 9 / 13 / 16 at n = 1k / 10k / 100k — at or below log2(n) |
+| Same input, NB-07's BST | 999 / 9,999 / 99,999 |
+| Comparisons per search | AVL **14.7** at n=50k vs NB-07 sorted **~24,700** |
+| Height bound, derived | **N(h) = Fib(h+3) − 1** exactly; 1/log2(φ) = **1.4404** |
+| Rotations per insert | random **0.47**, sorted **1.0** — O(1) amortised, not O(log n) |
+| Rotations per delete | **0.26** amortised, though a single delete can cascade |
+| B-tree node visits, n=100k | AVL **16**, t=8 **5**, t=64 **3**, t=256 **2** |
+| B-tree build time | **rises** with t: 1.0s at t=8, 6.1s at t=256 |
+| Java `TreeMap` vs `HashMap` | build **7×**, gets **45×** slower |
+| Java `TreeMap`, sorted vs shuffled input | **23.9 ms vs 128.4 ms** — sorted is *faster* |
+
+**Three findings worth carrying forward:**
+
+- **The signature difficulty is different in kind from every previous one.** Earlier notebooks'
+  difficulties were about *inputs*; this one is that **a broken rotation still produces a valid
+  BST**. Order correct, searches correct, every behavioural test passing — only the balance is
+  lost, and balance is a performance property invisible to correctness tests. Three realistic bugs
+  were introduced and all three were caught by the structural invariant, never by behaviour.
+- **The bugs manifest on different inputs, and sorted input is the worst test.** Measured heights
+  on 2,000 keys (log2 = 11): `single_only` gives **10 on sorted input and 13 on shuffled**;
+  `wrong_order` gives **13 sorted and 26 shuffled**. Sorted insertion only ever needs single
+  rotations, so it never exercises LR/RL — meaning the obvious test to write (sorted keys, because
+  that is what broke NB-07) is the input *least* likely to catch a rotation bug.
+- **The input ranking inverts between NB-07 and NB-08.** Java's `TreeMap` is **five times faster on
+  sorted input than on shuffled** (23.9 ms vs 128.4 ms), because sequential insertion has perfect
+  locality and a rebalancing pattern the branch predictor learns. The input that turned NB-07's
+  tree into a 199,999-level linked list is a red-black tree's *best* case. A guarantee does not just
+  remove the bad case — here it made the feared input the fastest one.
+
+- **Bad at:** the constant factor versus a hash table when ordering is not needed (measured: ~45×
+  on lookup).
 
 ### NB-09 — Heaps & Priority Queues ⬜
 - **Unique theory:** the heap property as an invariant; the implicit array layout; sift-up and
@@ -979,6 +1017,46 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 ## 11. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-08 (NB-08)
+- **NB-08 Balanced Trees & B-Trees: COMPLETE.** 36 cells (15 code, 21 markdown). Structure clean,
+  all 15 cells run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number audited.
+  **9 of 23.**
+- **The brief's scoping note was right and worth following literally.** AVL is implemented
+  completely (all four rotations, insert and delete, 10,000 randomised sequences with all four
+  cases firing ~11,000 times each); red-black and B-tree *delete* are deliberately not implemented,
+  and the notebook says so plainly with the reason. Being explicit about what a notebook skips is
+  better than a page of code nobody reads, and it let the space go to measurement instead.
+- **The signature difficulty is a different species from the previous five.** NB-02/03/05/06/07 all
+  had difficulties about *inputs*. This one is that **a broken rotation still produces a valid
+  BST** — order correct, searches correct, every behavioural test green, only the balance gone.
+  Three realistic bugs (forgot heights / wrong update order / never doing the double rotation) were
+  all caught by the structural invariant and none by behaviour. This is the strongest argument in
+  the series so far for invariants over assertions about outputs.
+- **A demo that nearly shipped wrong, and the fix made it better.** The first version of §3's
+  "still a valid BST" table used only sorted input, and two of the three bugs looked *fine* — the
+  single-rotation-only bug produced a perfect tree. The reason is that sorted insertion never
+  creates zig-zags, so LR/RL never execute. Adding a shuffled-input column exposed all three
+  (10→13 and 13→26) and produced a better lesson than intended: **testing a balanced tree with
+  sorted keys — the obvious thing, since that is what broke NB-07 — is the input least likely to
+  catch a rotation bug.**
+- **The input ranking inverts between NB-07 and NB-08**, which is the most satisfying measurement in
+  the series so far. Java's `TreeMap` is five times *faster* on sorted input than shuffled
+  (23.9 ms vs 128.4 ms) because sequential insertion has perfect locality and a predictable
+  rebalancing pattern. The input that destroyed NB-07's tree is a red-black tree's best case. Worth
+  citing whenever the series talks about worst cases again.
+- **The height bound derivation checks out exactly**: N(h) = Fib(h+3) − 1 for every h tested, and
+  the famous 1.44 constant is 1/log2(φ) = 1.4404. Unlike NB-07's Devroye constant, this one is
+  exact rather than asymptotic, so no qualification was needed.
+- **Also measured, and mildly surprising:** rotations are ~0.47 per random insert and ~0.26 per
+  delete — O(1) amortised, so rebalancing is not the expensive part of a balanced tree. And B-tree
+  build time *rises* with fan-out (1.0s at t=8, 6.1s at t=256) because node inserts are O(t), which
+  is why B-trees are not used for in-memory maps.
+- **Stored outputs and hygiene:** 34 outputs via nbclient, no stderr, no leaked paths, no bare
+  `---` hrules, structure re-verified.
+- **Next:** NB-09 Heaps & Priority Queues — a weaker tree invariant, stored in a flat array, for
+  when only the extreme matters. It should also close the locality complaint this notebook and
+  NB-04 keep making about pointer-based trees.
 
 ### 2026-09-08 (NB-07)
 - **NB-07 Binary Search Trees: COMPLETE.** 38 cells (15 code, 23 markdown). Structure clean, all 15
