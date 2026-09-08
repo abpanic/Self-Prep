@@ -10,7 +10,7 @@ The companion to [`../ML-Zero-to-Hero/`](../ML-Zero-to-Hero/), with a stricter q
 because in this domain correctness and cost are *decidable*, so they get tested rather than
 asserted.
 
-**Progress: 9 of 23 complete.**
+**Progress: 10 of 23 complete.**
 
 ***
 
@@ -27,6 +27,7 @@ asserted.
 | **06** | [`trees_zero_to_hero.ipynb`](trees_zero_to_hero.ipynb) | The recursive definition, all four traversals **each converted to an explicit stack**, **Morris traversal with its restoration property verified**, diameter and BFS variants — and the measured finding that a 1,000-node degenerate tree crashes recursion while a **1,000,000-node balanced one does not** | ✅ |
 | **07** | [`bst_zero_to_hero.ipynb`](bst_zero_to_hero.ipynb) | The invariant stated precisely (and the usual version refuted by construction), the three delete cases, validation three ways, successor/LCA/range queries — and **degeneration measured**: the same 50,000 keys cost 14.7 comparisons per search inserted balanced and **~24,700 inserted sorted** | ✅ |
 | **08** | [`balanced_trees_zero_to_hero.ipynb`](balanced_trees_zero_to_hero.ipynb) | **AVL implemented completely** with the height bound derived (N(h) = Fib(h+3) − 1 exactly), red-black at the properties level, **B-trees built** with the disk argument measured — and the signature difficulty that a broken rotation **still produces a valid BST** | ✅ |
+| **09** | [`heaps_zero_to_hero.ipynb`](heaps_zero_to_hero.ipynb) | A **weaker tree invariant in a flat array with no pointers**, heapify in O(n) with the summation proof and a measurement that revises the usual claim, d-ary heaps where **more comparisons run faster**, top-k, running median, k-way merge — and the misconception that **a heap is sorted** | ✅ |
 
 **Read 00 first, whatever you are after.** It builds
 [`dsa_toolkit.py`](dsa_toolkit.py) — the harness every other notebook imports — and it
@@ -34,8 +35,6 @@ establishes the habit the whole series runs on: *a complexity is something you m
 something you assert.*
 
 ## Still to come
-
-**Trees** — 09 Heaps & Priority Queues
 
 **Specialised structures** — 10 Tries · 11 Disjoint Set Union · 12 Fenwick & Segment Trees
 

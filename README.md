@@ -127,7 +127,7 @@ is stress-tested against a brute-force reference, **Python and Java are written 
 and cross-checked on identical inputs, every complexity is *measured* at doubling sizes, and
 every invariant is asserted in code.
 
-**9 of 23 notebooks complete.** Read them in order; each assumes the ones above it.
+**10 of 23 notebooks complete.** Read them in order; each assumes the ones above it.
 
 | # | Notebook | Topic |
 |---|---|---|
@@ -140,6 +140,7 @@ every invariant is asserted in code.
 | 06 | [`trees_zero_to_hero.ipynb`](DSA-Zero-to-Hero/trees_zero_to_hero.ipynb) | The recursive definition, four traversals each converted to an explicit stack, Morris traversal with its restoration verified, and recursion depth measured on both runtimes |
 | 07 | [`bst_zero_to_hero.ipynb`](DSA-Zero-to-Hero/bst_zero_to_hero.ipynb) | The BST invariant stated precisely, the three delete cases, validation done right, successor/LCA/range queries, and degeneration measured on sorted input |
 | 08 | [`balanced_trees_zero_to_hero.ipynb`](DSA-Zero-to-Hero/balanced_trees_zero_to_hero.ipynb) | AVL implemented completely with the height bound derived, red-black at the properties level, B-trees built with the disk argument measured, and why a broken rotation is invisible to correctness tests |
+| 09 | [`heaps_zero_to_hero.ipynb`](DSA-Zero-to-Hero/heaps_zero_to_hero.ipynb) | A weaker tree invariant in a flat array with no pointers, heapify in O(n) measured against the usual claim, d-ary heaps and the cache argument, and why a heap is not sorted |
 
 **Start with 00 whatever you are after.** It establishes the habit the whole series runs on:
 *a complexity is something you measure, not something you assert.* The

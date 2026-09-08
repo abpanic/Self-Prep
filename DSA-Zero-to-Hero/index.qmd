@@ -5,7 +5,7 @@ toc: true
 ---
 
 ::: {.callout-note}
-## 9 of 23 built
+## 10 of 23 built
 
 **[NB-00 Complexity & Amortised Analysis](complexity_zero_to_hero.ipynb)** is complete and
 verified. It is the one to read first: it builds `dsa_toolkit.py`, the harness every other
@@ -56,7 +56,12 @@ latency. Its signature difficulty is unlike the others — a broken rotation sti
 BST, so only a structural invariant can catch it. And the input ranking inverts: Java's `TreeMap`
 is five times faster on the sorted input that destroyed NB-07's tree.
 
-The remaining 14 are planned. The [build plan](plan.qmd) is the working document and is
+**[NB-09 Heaps & Priority Queues](heaps_zero_to_hero.ipynb)** takes the opposite approach to the
+same guarantee: weaken the invariant instead of working to maintain a strong one. The result needs
+no pointers at all, which finally closes the locality complaint the previous notebooks kept making
+— and then reopens it, because heapsort still loses to quicksort on access pattern alone.
+
+The remaining 13 are planned. The [build plan](plan.qmd) is the working document and is
 published as-is, including its open questions.
 :::
 
@@ -101,7 +106,7 @@ Harness](complexity_zero_to_hero.ipynb) ✅
 [02 Strings & String Algorithms](strings_zero_to_hero.ipynb) ✅ · [03 Hashing & Hash Tables](hashing_zero_to_hero.ipynb) ✅ · [04 Linked Lists](linked_lists_zero_to_hero.ipynb) ✅ ·
 [05 Stacks, Queues & Deques](stacks_queues_zero_to_hero.ipynb) ✅
 
-**Trees** — [06 Trees & Traversals](trees_zero_to_hero.ipynb) ✅ · [07 Binary Search Trees](bst_zero_to_hero.ipynb) ✅ · [08 Balanced Trees & B-Trees](balanced_trees_zero_to_hero.ipynb) ✅ · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
+**Trees** — [06 Trees & Traversals](trees_zero_to_hero.ipynb) ✅ · [07 Binary Search Trees](bst_zero_to_hero.ipynb) ✅ · [08 Balanced Trees & B-Trees](balanced_trees_zero_to_hero.ipynb) ✅ · [09 Heaps & Priority Queues](heaps_zero_to_hero.ipynb) ✅ 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
 09 Heaps & Priority Queues
 
 **Specialised structures** — 10 Tries · 11 Disjoint Set Union · 12 Fenwick & Segment Trees

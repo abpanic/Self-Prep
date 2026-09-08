@@ -117,7 +117,7 @@ the owner to close the file first.
 | 06 | **Trees & Traversals** | `trees_zero_to_hero.ipynb` | ✅ | 41 (15 code) | ✅ struct + run |
 | 07 | **Binary Search Trees** | `bst_zero_to_hero.ipynb` | ✅ | 38 (15 code) | ✅ struct + run |
 | 08 | **Balanced Trees & B-Trees** | `balanced_trees_zero_to_hero.ipynb` | ✅ | 36 (15 code) | ✅ struct + run |
-| 09 | **Heaps & Priority Queues** | `heaps_zero_to_hero.ipynb` | ⬜ | — | — |
+| 09 | **Heaps & Priority Queues** | `heaps_zero_to_hero.ipynb` | ✅ | 37 (14 code) | ✅ struct + run |
 | 10 | **Tries** | `tries_zero_to_hero.ipynb` | ⬜ | — | — |
 | 11 | **Disjoint Set Union** | `dsu_zero_to_hero.ipynb` | ⬜ | — | — |
 | 12 | **Fenwick & Segment Trees** | `range_queries_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**9 of 23 done.**
+**10 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -820,17 +820,64 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 - **Bad at:** the constant factor versus a hash table when ordering is not needed (measured: ~45×
   on lookup).
 
-### NB-09 — Heaps & Priority Queues ⬜
-- **Unique theory:** the heap property as an invariant; the implicit array layout; sift-up and
-  sift-down; **heapify in O(n)**, with the summation proof and then the measurement confirming it
-  against the naive O(n log n) build.
-- **Must cover:** top-k, running median with two heaps, k-way merge, heapsort; d-ary heaps and the
-  cache argument; **indexed heaps for decrease-key**, which Dijkstra (NB-21) needs.
-- **Signature difficulty:** a heap is not sorted, and the array is not a sorted array — the most
-  common misconception; demonstrate directly.
-- **Java angle:** `PriorityQueue` is a binary heap; it has no decrease-key, and what people do
-  instead (lazy deletion) — measured.
-- **Bad at:** search, arbitrary deletion, iteration in order.
+### NB-09 — Heaps & Priority Queues ✅
+**37 cells (14 code, 23 markdown). Structure clean; all 14 cells run under warnings-as-errors;
+Java at `-Xlint:all -Werror`; every number audited against printed output.**
+
+- **Unique theory:** the heap property as a *partial* order; the implicit array layout that removes
+  pointers entirely; sift-up/sift-down; **heapify in O(n)** with the summation proof and a
+  measurement that revises the usual claim.
+- **Covered:** top-k, running median (two heaps), k-way merge, heapsort, d-ary heaps with the cache
+  argument, and indexed heaps vs lazy deletion for decrease-key.
+- **Signature difficulty (§3):** a heap is not sorted — demonstrated directly, including *how often
+  it accidentally looks sorted* at small n.
+- **Java angle:** `PriorityQueue`'s unordered iteration, the O(n) `remove(Object)`, and heapify
+  beating n adds — all measured.
+
+**Headline measurements:**
+
+| Measurement | Result |
+|---|---|
+| Heapify swaps per element | **0.00 / 0.74 / 1.00** on ascending / random / descending — always ≤ 1 |
+| Repeated-push swaps per element | 0.00 / 1.27 / **11.4 → 18.0** (growing) on the same inputs |
+| d-ary heap comparisons per element | 30.3 / 31.6 / 43.4 / 67.2 / 112.2 for d = 2/4/8/16/32, tracking d·log_d(n) |
+| d-ary heap **wall clock** | **d=4 fastest (1.61 s)** despite more comparisons than d=2 (2.00 s) |
+| Java `PriorityQueue.remove()` vs `poll()` | **82× slower**, one method call away |
+| Java heapify vs n adds | **5.8× faster** |
+| Heapified array accidentally sorted | **100% at n=2**, 52% at n=3, 34% at n=4, **0% by n=10** |
+| Decrease-key, like-for-like in Python | indexed **4.91 s** vs lazy **6.57 s** at n=200k |
+| Decrease-key, library heap | lazy with C `heapq` **1.76 s** — beats both |
+
+**Three findings worth carrying forward:**
+
+- **The textbook heapify claim is half wrong, and the measurement says which half.** "Heapify is
+  O(n), building by pushes is O(n log n)" holds only for *adversarial* input. On random data both
+  are linear (0.74 vs 1.27 swaps/element) and the gap is a constant factor of 1.7; push only becomes
+  Θ(n log n) on descending input. The honest statement is the series' recurring one: **heapify's
+  cost is bounded regardless of input; repeated push's is a property of the data.** Fourth arrival
+  of the who-chooses-the-input theme, after NB-02 §3, NB-03 §3, NB-05 §3.3 and NB-07 §3.
+- **The d-ary cache argument is measurable and contradicts the comparison count.** d=4 does *more*
+  comparisons than d=2 and is *faster*, because it has half as many levels and its children are
+  adjacent in one cache line. This is the constructive use of the same observation §2.4 makes
+  destructively about heapsort: the flat array removes the pointer chase, but the **access pattern**
+  still has to cooperate — heapsort's strides double every level, which is why it loses to
+  quicksort despite better bounds.
+- **The decrease-key question splits cleanly and both sides are right.** Like-for-like in Python the
+  indexed heap wins (4.91 s vs 6.57 s) — the algorithmic saving is real, since its heap never grows
+  past n while lazy deletion's reaches 2.7×. But the C library's heap with lazy deletion beats both
+  (1.76 s). Same lesson as NB-04 §3 and NB-08 §2.4: your clever structure competes with their fast
+  simple one.
+
+**Two of my own bugs, both caught by tooling rather than reading:**
+
+- **NB-00 §3.1's RNG bug, reproduced.** `random.Random(n).randrange(...)` inside a comprehension
+  re-seeds per element, so every value was identical and every swap column read 0.00 — which looked
+  like a triumph. The notebook now creates the generator once and says why in prose.
+- **The d-ary heapify start index.** `n//d - 1` is correct for d=2 and wrong for every other d; the
+  differential test caught it at d=3 after d=2 passed. Now `(n-2)//d`, with a comment naming how it
+  was found.
+
+- **Bad at:** search, arbitrary deletion, iteration in order — all Θ(n), all measured in §3.
 
 ### NB-10 — Tries ⬜
 - **Unique theory:** the prefix tree; time is O(length) and **independent of the number of keys**,
@@ -1017,6 +1064,40 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 ## 11. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-09 (NB-09)
+- **NB-09 Heaps & Priority Queues: COMPLETE.** 37 cells (14 code, 23 markdown). Structure clean,
+  all 14 cells run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number audited.
+  **10 of 23.**
+- **A textbook claim needed revising for the second time in three notebooks.** "Heapify is O(n),
+  building by n pushes is O(n log n)" is only true for adversarial input: on random data both are
+  linear (0.74 vs 1.27 swaps per element) and push is merely 1.7x worse. It becomes Θ(n log n) only
+  on descending input. After NB-07's Devroye constant, this is the second time measurement has
+  qualified a received result rather than one of my own guesses — worth watching for.
+- **The locality thread that ran through NB-04 and NB-08 finally closes, and then reopens.** A heap
+  is a complete tree, so it needs no pointers at all — NB-04's 48 bytes per node and 30x traversal
+  penalty both go to zero. But §2.4 measures heapsort losing to quicksort anyway, because
+  sift-down's strides double every level and leave the cache despite the perfect layout. The
+  corrected slogan is now stated explicitly: **the flat array removes the pointer chase; the access
+  pattern still has to cooperate.** §1.4's d-ary result is the constructive version of the same
+  observation — d=4 does more comparisons than d=2 and is faster.
+- **I reproduced NB-00 §3.1's own RNG bug while writing this notebook.** Seeding inside a
+  comprehension made every generated value identical, so every swap column read 0.00 and looked
+  like a triumph for both build methods. Caught only because 0.00 for *both* was implausible. The
+  notebook now creates the generator once and explains the trap in prose, since the failure mode is
+  a table of plausible zeros rather than an error.
+- **The differential test caught a real bug in my d-ary heapify** — `n//d - 1` is right for d=2 and
+  wrong for every other d — at d=3, after d=2 passed. This is the fourth notebook where testing a
+  parameterised structure at only its most common parameter would have shipped a bug, and it argues
+  for always testing at least one non-default value.
+- **The decrease-key question resolved in a genuinely mixed way**, which is why it was worth
+  measuring rather than asserting: like-for-like in Python the indexed heap wins, and the C library
+  with lazy deletion beats both. Both the algorithmic and the engineering arguments are correct
+  about different things, and the notebook says so.
+- **Stored outputs and hygiene:** 34 outputs via nbclient, no stderr, no leaked paths, no bare
+  `---` hrules, structure re-verified.
+- **Next:** NB-10 Tries — keyed on the *structure* of the key rather than on comparisons, which is
+  the third distinct way this series has organised a lookup after hashing and ordering.
 
 ### 2026-09-08 (NB-08)
 - **NB-08 Balanced Trees & B-Trees: COMPLETE.** 36 cells (15 code, 21 markdown). Structure clean,
