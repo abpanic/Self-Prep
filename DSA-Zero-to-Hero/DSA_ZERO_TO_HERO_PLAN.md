@@ -115,7 +115,7 @@ the owner to close the file first.
 | 04 | **Linked Lists** | `linked_lists_zero_to_hero.ipynb` | ✅ | 56 (21 code) | ✅ struct + run |
 | 05 | **Stacks, Queues & Deques** | `stacks_queues_zero_to_hero.ipynb` | ✅ | 50 (18 code) | ✅ struct + run |
 | 06 | **Trees & Traversals** | `trees_zero_to_hero.ipynb` | ✅ | 41 (15 code) | ✅ struct + run |
-| 07 | **Binary Search Trees** | `bst_zero_to_hero.ipynb` | ⬜ | — | — |
+| 07 | **Binary Search Trees** | `bst_zero_to_hero.ipynb` | ✅ | 38 (15 code) | ✅ struct + run |
 | 08 | **Balanced Trees & B-Trees** | `balanced_trees_zero_to_hero.ipynb` | ⬜ | — | — |
 | 09 | **Heaps & Priority Queues** | `heaps_zero_to_hero.ipynb` | ⬜ | — | — |
 | 10 | **Tries** | `tries_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**7 of 23 done.**
+**8 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -723,15 +723,50 @@ arriving a fourth time, and it is now an explicit through-line.
 
 - **Bad at:** anything needing an ordering guarantee without the BST invariant (NB-07).
 
-### NB-07 — Binary Search Trees ⬜
-- **Unique theory:** the BST invariant stated precisely (not "left is smaller"); search, insert
-  and the three delete cases; inorder traversal yields sorted order, and why that is the invariant
-  restated.
-- **Must cover:** validate-BST done correctly (the range argument, not the parent comparison);
-  successor/predecessor; LCA.
-- **Signature difficulty:** **degeneration.** Insert sorted data and measure the tree become a
-  linked list — O(log n) → O(n), demonstrated, which is the entire motivation for NB-08.
-- **Java angle:** `Comparable`/`Comparator`, and why `TreeMap` exists.
+### NB-07 — Binary Search Trees ✅
+**38 cells (15 code, 23 markdown). Structure clean; all 15 cells run under warnings-as-errors;
+Java at `-Xlint:all -Werror`; every number audited against printed output.**
+
+- **Unique theory:** the invariant stated precisely with the wrong version refuted by construction;
+  search, insert and the three delete cases; inorder as the invariant restated.
+- **Covered:** validate-BST three ways (one wrong, two right), successor/predecessor, LCA in
+  $O(h)$, range queries with pruning and $k$th smallest.
+- **Signature difficulty (§3):** degeneration, measured on shape, search cost and build cost.
+- **Java angle:** `Comparable`/`Comparator`, why `TreeMap` exists, and what a comparator
+  inconsistent with `equals` does to a `TreeSet`.
+- **Everything is iterative**, because §3 builds 50,000-node degenerate trees on purpose and
+  NB-06 §3 measured recursion dying at 1,000.
+
+**Headline measurements:**
+
+| Measurement | Result |
+|---|---|
+| 50,000 keys, comparisons/search | balanced **14.7**, random **19.1**, sorted **~24,700** (≈1,700×) |
+| Height of the same three | 15 / 34 / **49,999** |
+| Build cost | sorted **O(n²)** (err 0.008) vs random **O(n log n)** (err 0.15) |
+| Random BST average depth | tracks **2 ln n − 3** closely (11.00 vs 10.82 at n=1,000) |
+| Random BST height constant | h/ln n = **3.00 → 3.31 → 3.44**, still short of the asymptotic 4.311 |
+| Range query pruning | 8 keys found in **25 node visits** of 20,000 |
+| Fixes for sorted input | naive h=19,999; shuffle h=34; build-from-median **h=14** (optimum 14) |
+
+**Three findings worth carrying forward:**
+
+- **The randomised test found the wrong validator's counterexample immediately** — a five-node tree,
+  no cleverness. The "children only" check passes every balanced, sorted and most random examples
+  and fails only when a key crosses an *ancestor's* boundary rather than a *parent's*, which is
+  exactly the case nobody draws by hand. Same lesson as NB-05 §3.1: a plausible check needs a
+  reference, not more staring.
+- **The asymptotic constant does not apply at realistic n.** Devroye's $4.311\ln n$ for expected
+  height is correct and converges slowly: measured $h/\ln n$ is 3.44 at n = 100,000, so quoting the
+  asymptotic would overstate the height by about a quarter. Average depth, by contrast, tracks
+  $2\ln n - 3$ tightly. Worth remembering as a general caution — an asymptotic gives the shape of
+  the curve, not the value at your n.
+- **The Java section produced the notebook's most surprising output.** A `TreeSet` ordered by string
+  length alone swallows an element and then reports `contains("bbb") == true` for a string it does
+  not contain. Ordered containers define "same element" as `compare() == 0`, never `equals()` —
+  which is NB-03 §1.6's `hashCode`/`equals` contract with different methods and the same silent
+  failure mode.
+
 - **Bad at:** adversarial or sorted insertion order; nothing guarantees balance.
 
 ### NB-08 — Balanced Trees & B-Trees ⬜
@@ -944,6 +979,41 @@ arriving a fourth time, and it is now an explicit through-line.
 ## 11. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-08 (NB-07)
+- **NB-07 Binary Search Trees: COMPLETE.** 38 cells (15 code, 23 markdown). Structure clean, all 15
+  cells run under warnings-as-errors, Java at `-Xlint:all -Werror`, every number audited.
+  **8 of 23.**
+- **The signature difficulty landed exactly as briefed for once**, which is worth noting after four
+  notebooks where it did not. Sorted insertion really does produce a linked list, and the numbers
+  are stark enough to carry the section without embellishment: 14.7 comparisons per search
+  balanced, 19.1 random, ~24,700 sorted, with build cost O(n^2) against O(n log n). No rewriting
+  required.
+- **What did surprise me is that the textbook constant is wrong at realistic sizes.** Devroye's
+  4.311 ln n for the expected height of a random BST is asymptotically right and converges slowly:
+  measured h/ln n is 3.00, 3.31, 3.44 at n = 1k, 10k, 100k. Quoting the asymptotic as "the height"
+  would have overstated it by about a quarter. Average depth, by contrast, tracks 2 ln n - 3
+  tightly. Generalisable caution for the rest of the series: an asymptotic gives the shape of the
+  curve, not the value at your n -- and this is the first time in the series a *textbook* result
+  rather than my own guess needed qualifying against measurement.
+- **The differential test caught the wrong BST validator instantly**, on a five-node tree, with no
+  hand-crafted adversarial input. The "compare each node with its children" check passes every
+  balanced, sorted and most random examples; it fails only when a key crosses an ancestor's
+  boundary rather than a parent's. Third instance of the pattern (after NB-05 §3.1 and NB-06's own
+  scaffolding) and it is now the standard way these notebooks introduce a subtle-invariant section.
+- **Java produced the notebook's best output.** A TreeSet ordered by string length alone swallows an
+  element and then reports contains("bbb") == true for a string it does not contain. Ordered
+  containers define "same element" as compare() == 0, never equals() -- NB-03 §1.6's hashCode/equals
+  contract with different methods and the same silent failure. The two notebooks now cross-reference
+  each other on it.
+- **Everything in this notebook is iterative**, on purpose: §3 builds 50,000-node degenerate trees
+  and NB-06 §3 measured recursion dying at 1,000. Writing the iterative delete (find node and
+  parent, then splice, with the successor's parent possibly being the deleted node itself) was the
+  fiddliest code in the notebook and is exactly the case the randomised test hammers.
+- **Stored outputs and hygiene:** 28 outputs via nbclient, no stderr, no leaked paths, no bare
+  `---` hrules, structure re-verified.
+- **Next:** NB-08 Balanced Trees & B-Trees — the answer to this notebook's §3, and where the
+  "who chooses the input?" thread finally gets an unconditional guarantee rather than a mitigation.
 
 ### 2026-09-08 (NB-06)
 - **NB-06 Trees & Traversals: COMPLETE.** 41 cells (15 code, 26 markdown). Structure clean, all 15

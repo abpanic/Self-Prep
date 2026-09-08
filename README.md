@@ -127,7 +127,7 @@ is stress-tested against a brute-force reference, **Python and Java are written 
 and cross-checked on identical inputs, every complexity is *measured* at doubling sizes, and
 every invariant is asserted in code.
 
-**7 of 23 notebooks complete.** Read them in order; each assumes the ones above it.
+**8 of 23 notebooks complete.** Read them in order; each assumes the ones above it.
 
 | # | Notebook | Topic |
 |---|---|---|
@@ -138,6 +138,7 @@ every invariant is asserted in code.
 | 04 | [`linked_lists_zero_to_hero.ipynb`](DSA-Zero-to-Hero/linked_lists_zero_to_hero.ipynb) | Node cost and layout measured, sentinel nodes with the branch saving counted, reversal, Floyd's cycle detection with the proof, the LRU cache — and the honest case that linked lists are usually the wrong answer |
 | 05 | [`stacks_queues_zero_to_hero.ipynb`](DSA-Zero-to-Hero/stacks_queues_zero_to_hero.ipynb) | LIFO/FIFO as invariants, the circular buffer from scratch, the two-stack queue's amortised bound counted exactly, and the monotonic stack derived from its invariant then applied four ways |
 | 06 | [`trees_zero_to_hero.ipynb`](DSA-Zero-to-Hero/trees_zero_to_hero.ipynb) | The recursive definition, four traversals each converted to an explicit stack, Morris traversal with its restoration verified, and recursion depth measured on both runtimes |
+| 07 | [`bst_zero_to_hero.ipynb`](DSA-Zero-to-Hero/bst_zero_to_hero.ipynb) | The BST invariant stated precisely, the three delete cases, validation done right, successor/LCA/range queries, and degeneration measured on sorted input |
 
 **Start with 00 whatever you are after.** It establishes the habit the whole series runs on:
 *a complexity is something you measure, not something you assert.* The

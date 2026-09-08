@@ -37,7 +37,7 @@ A few of the results it argues for:
 ::: {.g-col-12 .g-col-md-6}
 ### [DSA: Zero to Hero](DSA-Zero-to-Hero/index.qmd)
 
-**23 notebooks · 7 built · in progress**
+**23 notebooks · 8 built · in progress**
 
 The same treatment for data structures and algorithms, with a stricter quality bar — because in
 this domain correctness and cost are decidable, so they get tested rather than asserted:
@@ -63,6 +63,8 @@ circular buffer, counts an amortised bound exactly, and derives the monotonic st
 invariant it asserts in the loop.
 [**NB-06 Trees & Traversals**](DSA-Zero-to-Hero/trees_zero_to_hero.ipynb) measures the recursion
 limit precisely enough to kill the folk rule about it.
+[**NB-07 Binary Search Trees**](DSA-Zero-to-Hero/bst_zero_to_hero.ipynb) adds the ordering
+invariant and measures what happens when nothing enforces balance.
 
 [Start with NB-00 →](DSA-Zero-to-Hero/complexity_zero_to_hero.ipynb) ·
 [Read the plan →](DSA-Zero-to-Hero/plan.qmd)

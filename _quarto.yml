@@ -122,6 +122,8 @@ website:
           contents:
             - href: DSA-Zero-to-Hero/trees_zero_to_hero.ipynb
               text: "06 · Trees & Traversals"
+            - href: DSA-Zero-to-Hero/bst_zero_to_hero.ipynb
+              text: "07 · Binary Search Trees"
         - href: DSA-Zero-to-Hero/plan.qmd
           text: "Build plan & status"
 

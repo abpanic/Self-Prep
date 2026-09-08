@@ -5,7 +5,7 @@ toc: true
 ---
 
 ::: {.callout-note}
-## 7 of 23 built
+## 8 of 23 built
 
 **[NB-00 Complexity & Amortised Analysis](complexity_zero_to_hero.ipynb)** is complete and
 verified. It is the one to read first: it builds `dsa_toolkit.py`, the harness every other
@@ -45,7 +45,12 @@ stacks, verifies that Morris traversal puts the tree back exactly as it found it
 recursion limit precisely enough to kill the folk rule about it: a 1,000-node degenerate tree
 crashes where a 1,000,000-node balanced one does not.
 
-The remaining 16 are planned. The [build plan](plan.qmd) is the working document and is
+**[NB-07 Binary Search Trees](bst_zero_to_hero.ipynb)** adds the ordering invariant, refutes the
+version of it most people recite, and then measures what happens when nothing enforces balance:
+the same 50,000 keys cost 14.7 comparisons per search inserted in balanced order and about 24,700
+inserted in sorted order.
+
+The remaining 15 are planned. The [build plan](plan.qmd) is the working document and is
 published as-is, including its open questions.
 :::
 
@@ -90,7 +95,7 @@ Harness](complexity_zero_to_hero.ipynb) ✅
 [02 Strings & String Algorithms](strings_zero_to_hero.ipynb) ✅ · [03 Hashing & Hash Tables](hashing_zero_to_hero.ipynb) ✅ · [04 Linked Lists](linked_lists_zero_to_hero.ipynb) ✅ ·
 [05 Stacks, Queues & Deques](stacks_queues_zero_to_hero.ipynb) ✅
 
-**Trees** — [06 Trees & Traversals](trees_zero_to_hero.ipynb) ✅ · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
+**Trees** — [06 Trees & Traversals](trees_zero_to_hero.ipynb) ✅ · [07 Binary Search Trees](bst_zero_to_hero.ipynb) ✅ · 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
 09 Heaps & Priority Queues
 
 **Specialised structures** — 10 Tries · 11 Disjoint Set Union · 12 Fenwick & Segment Trees
