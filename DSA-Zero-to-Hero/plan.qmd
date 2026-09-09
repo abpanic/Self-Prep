@@ -1,6 +1,10 @@
 ---
 title: "DSA: Zero to Hero — the build plan"
 subtitle: "Roster, quality bar, per-notebook briefs and status log. Published as-is, blockers included."
+description: |
+  The working plan behind the DSA series: the full 23-notebook roster, the quality bar every
+  notebook must clear, a brief with headline measurements for each finished notebook, and a
+  dated status log.
 toc: true
 toc-depth: 2
 ---

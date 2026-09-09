@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: _site
+  resources:
+    - assets/
   # Only the two Zero-to-Hero series are published. Everything else in the repo
   # (the tracker notebooks, junk/, the practical notebooks) is deliberately left
   # out: add it here if that changes.
@@ -25,6 +27,15 @@ website:
   site-url: "https://self-prep-seven.vercel.app"
   repo-url: "https://github.com/abpanic/Self-Prep"
   repo-actions: [source]
+  favicon: assets/favicon.svg
+
+  # Discoverability. site-url above is what makes Quarto emit sitemap.xml and
+  # robots.txt at all; these turn the pages into decent search and share results.
+  # `image` is the fallback social card for any page that does not set its own.
+  image: assets/social-card.png
+  open-graph: true
+  twitter-card:
+    card-style: summary_large_image
   search:
     location: navbar
     type: overlay
@@ -151,6 +162,9 @@ format:
     fig-responsive: true
     link-external-newwindow: true
     anchor-sections: true
+    # Every page declares the URL it wants to be indexed under. tools/postprocess_site.py
+    # then rewrites these to the extensionless form Vercel actually serves.
+    canonical-url: true
     smooth-scroll: true
     # Long printed tables are the house style in these notebooks; let them scroll
     # rather than wrap into nonsense on a phone.

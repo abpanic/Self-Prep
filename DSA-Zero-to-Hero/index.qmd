@@ -1,6 +1,11 @@
 ---
 title: "DSA: Zero to Hero"
-subtitle: "23 notebooks. Two are built; the other 21 are planned."
+subtitle: "23 notebooks. Eleven are built; the other 12 are planned."
+description: |
+  Data structures and algorithms in Python and Java, built from scratch and measured:
+  complexity analysis, arrays, strings, hashing, linked lists, stacks and queues, trees,
+  binary search trees, balanced trees and B-trees, heaps, and tries. Every implementation
+  is differentially stress-tested and every complexity claim is timed, not asserted.
 toc: true
 ---
 

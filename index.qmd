@@ -1,7 +1,28 @@
 ---
 title: "Self-Prep"
 subtitle: "Two notebook series that take a topic from zero to job-ready — and show their working."
+description: |
+  Machine learning and data structures & algorithms, taught from scratch in executable
+  notebooks. Every algorithm is implemented by hand, checked against a reference library,
+  and stress-tested — and no claim is made that was not measured.
 toc: false
+format:
+  html:
+    # Structured data for the home page only. Deliberately minimal and factual:
+    # just enough for a crawler to know what this site is, with nothing claimed
+    # that the pages do not back up.
+    include-in-header:
+      - text: |
+          <script type="application/ld+json">
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Self-Prep",
+            "url": "https://self-prep-seven.vercel.app/",
+            "inLanguage": "en",
+            "description": "Machine learning and data structures & algorithms, taught from scratch in executable notebooks."
+          }
+          </script>
 ---
 
 Every notebook here does the same thing: build one topic up from nothing, implement it from

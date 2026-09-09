@@ -3,8 +3,13 @@
 #
 # Nothing is executed at render time (see `execute.enabled: false` in _quarto.yml)
 # because every notebook ships with its outputs already stored. That means this
-# build needs no Python, no scikit-learn, no dataset downloads and — once the DSA
-# series exists — no JDK. Quarto alone is enough.
+# build needs no scikit-learn, no dataset downloads and no JDK — Quarto renders
+# the whole site on its own.
+#
+# The one addition is tools/postprocess_site.py, which needs a bare Python 3 (no
+# third-party packages) to write robots.txt and match canonical/sitemap URLs to
+# the clean URLs Vercel serves. If no interpreter is found the build still
+# succeeds and simply ships Quarto's own robots.txt and sitemap.
 #
 # If you would rather not install Quarto on every build, the alternative is to
 # render locally and commit the `_site/` directory: drop `_site/` from
@@ -28,6 +33,18 @@ quarto --version
 
 echo "==> Rendering site"
 quarto render
+
+# robots.txt, plus canonical/sitemap URLs matched to the clean URLs Vercel serves.
+echo "==> Post-processing for crawlers"
+PY_BIN=""
+for candidate in python3 python; do
+  if command -v "${candidate}" >/dev/null 2>&1; then PY_BIN="${candidate}"; break; fi
+done
+if [ -n "${PY_BIN}" ]; then
+  "${PY_BIN}" tools/postprocess_site.py _site
+else
+  echo "WARNING: no python3 on PATH; shipping Quarto's robots.txt and sitemap unmodified" >&2
+fi
 
 echo "==> Done. Output in _site/"
 ls -la _site | head -20

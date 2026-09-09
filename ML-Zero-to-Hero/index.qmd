@@ -1,6 +1,12 @@
 ---
 title: "ML: Zero to Hero"
 subtitle: "16 notebooks, 952 cells, complete."
+description: |
+  A complete 16-notebook machine learning course: foundations, linear and logistic
+  regression, trees, random forests, gradient boosting, SVMs, KNN, naive Bayes, PCA,
+  k-means, imbalanced classification, explainable AI, time series, recommenders and
+  anomaly detection. Each algorithm is implemented from scratch and checked against
+  scikit-learn in the same cell.
 toc: true
 ---
 

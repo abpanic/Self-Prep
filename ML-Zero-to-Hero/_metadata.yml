@@ -1,0 +1,6 @@
+# Applies to every rendered file in this directory.
+#
+# Without this, Quarto picks the first figure in a notebook as its Open Graph
+# image — which means a social card showing an unlabelled matplotlib chart, at
+# whatever size that figure happened to be. Pin the real card instead.
+image: /assets/social-card.png
