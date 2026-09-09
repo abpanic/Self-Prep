@@ -10,7 +10,7 @@ The companion to [`../ML-Zero-to-Hero/`](../ML-Zero-to-Hero/), with a stricter q
 because in this domain correctness and cost are *decidable*, so they get tested rather than
 asserted.
 
-**Progress: 10 of 23 complete.**
+**Progress: 11 of 23 complete.**
 
 ***
 
@@ -28,6 +28,7 @@ asserted.
 | **07** | [`bst_zero_to_hero.ipynb`](bst_zero_to_hero.ipynb) | The invariant stated precisely (and the usual version refuted by construction), the three delete cases, validation three ways, successor/LCA/range queries — and **degeneration measured**: the same 50,000 keys cost 14.7 comparisons per search inserted balanced and **~24,700 inserted sorted** | ✅ |
 | **08** | [`balanced_trees_zero_to_hero.ipynb`](balanced_trees_zero_to_hero.ipynb) | **AVL implemented completely** with the height bound derived (N(h) = Fib(h+3) − 1 exactly), red-black at the properties level, **B-trees built** with the disk argument measured — and the signature difficulty that a broken rotation **still produces a valid BST** | ✅ |
 | **09** | [`heaps_zero_to_hero.ipynb`](heaps_zero_to_hero.ipynb) | A **weaker tree invariant in a flat array with no pointers**, heapify in O(n) with the summation proof and a measurement that revises the usual claim, d-ary heaps where **more comparisons run faster**, top-k, running median, k-way merge — and the misconception that **a heap is sorted** | ✅ |
+| **10** | [`tries_zero_to_hero.ipynb`](tries_zero_to_hero.ipynb) | Indexing by the key's **structure** rather than by hash or comparison — with the headline claim split into the half that holds (**hops are exactly flat**) and the half that does not (**time grows 1.7×**), autocomplete, a bitwise trie, and **memory measured, compressed, and measured again** | ✅ |
 
 **Read 00 first, whatever you are after.** It builds
 [`dsa_toolkit.py`](dsa_toolkit.py) — the harness every other notebook imports — and it
@@ -36,7 +37,7 @@ something you assert.*
 
 ## Still to come
 
-**Specialised structures** — 10 Tries · 11 Disjoint Set Union · 12 Fenwick & Segment Trees
+**Specialised structures** — 11 Disjoint Set Union · 12 Fenwick & Segment Trees
 
 **Sorting and searching** — 13 Comparison Sorts & the Lower Bound · 14 Linear-Time Sorts &
 Selection · 15 Binary Search & the Invariant Discipline

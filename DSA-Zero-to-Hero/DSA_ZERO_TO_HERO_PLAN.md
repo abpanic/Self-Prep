@@ -118,7 +118,7 @@ the owner to close the file first.
 | 07 | **Binary Search Trees** | `bst_zero_to_hero.ipynb` | ✅ | 38 (15 code) | ✅ struct + run |
 | 08 | **Balanced Trees & B-Trees** | `balanced_trees_zero_to_hero.ipynb` | ✅ | 36 (15 code) | ✅ struct + run |
 | 09 | **Heaps & Priority Queues** | `heaps_zero_to_hero.ipynb` | ✅ | 37 (14 code) | ✅ struct + run |
-| 10 | **Tries** | `tries_zero_to_hero.ipynb` | ⬜ | — | — |
+| 10 | **Tries** | `tries_zero_to_hero.ipynb` | ✅ | 34 (13 code) | ✅ struct + run |
 | 11 | **Disjoint Set Union** | `dsu_zero_to_hero.ipynb` | ⬜ | — | — |
 | 12 | **Fenwick & Segment Trees** | `range_queries_zero_to_hero.ipynb` | ⬜ | — | — |
 | 13 | **Sorting I: Comparison Sorts & the Lower Bound** | `sorting_comparison_zero_to_hero.ipynb` | ⬜ | — | — |
@@ -132,7 +132,7 @@ the owner to close the file first.
 | 21 | **Graphs II: Shortest Paths, MST & Flow** | `graphs_paths_zero_to_hero.ipynb` | ⬜ | — | — |
 | 22 | **Bit Manipulation** | `bit_manipulation_zero_to_hero.ipynb` | ⬜ | — | — |
 
-**10 of 23 done.**
+**11 of 23 done.**
 
 ### Why 23 and not 22
 
@@ -879,14 +879,60 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 
 - **Bad at:** search, arbitrary deletion, iteration in order — all Θ(n), all measured in §3.
 
-### NB-10 — Tries ⬜
-- **Unique theory:** the prefix tree; time is O(length) and **independent of the number of keys**,
-  which is the whole point; node representation trade-offs (array vs map children).
-- **Must cover:** insert/search/prefix-search/delete; autocomplete; word-search-on-grid with a trie.
-- **Signature difficulty:** **memory.** Measure a trie against a `set` for the same word list;
-  the overhead is large. Then compress it (radix tree) and measure again.
-- **Java angle:** `HashMap<Character, Node>` vs `Node[26]`, and the boxing cost.
-- **Bad at:** memory, non-prefix queries, large alphabets.
+### NB-10 — Tries ✅
+**34 cells (13 code, 21 markdown). Structure clean; all 13 cells run under warnings-as-errors;
+Java at `-Xlint:all -Werror`; every number audited against printed output.**
+
+- **Unique theory:** indexing by the key's *structure* rather than by hash or comparison; the
+  independence claim separated into operations (true) and time (not); node representation.
+- **Covered:** insert/search/prefix/pruning-delete, autocomplete, grid word search, longest common
+  prefix, and a **bitwise** trie holding no strings at all.
+- **Signature difficulty (§3):** memory, measured on two corpora, then compressed and measured again.
+- **Java angle:** `Node[26]` vs `HashMap<Character,Node>` vs no trie at all.
+
+**Headline measurements:**
+
+| Measurement | Result |
+|---|---|
+| Trie hops per lookup, n = 1k → 200k | **8.41 / 8.50 / 8.50 / 8.47** — exactly flat |
+| Trie wall clock over the same range | **1.07 → 1.84 µs** — grows 1.7× |
+| Exact lookup vs a `set` | set wins at every size (0.11–0.17 µs) |
+| Java: array / map / no trie | **1.92 / 2.96 / 0.24 ms** |
+| Java array slot utilisation | **3.8% used**; average **1.00 children per node** |
+| Memory vs `set`, low prefix sharing | 6.11 nodes/word, **8.5×** |
+| Memory vs `set`, high prefix sharing | 1.95 nodes/word, **2.4×** |
+| Radix compression | **4.61×** fewer nodes (low sharing), 1.77× (high) |
+| Radix vs `set`, after compression | **still 1.7× and 1.4×** |
+| Prefix query: trie vs sorted array | sorted array wins **8×** (2.2 µs vs 18.0 µs) |
+| Grid word search: trie vs per-word DFS | **~4× fewer cell visits**, ratio stable |
+
+**Three findings worth carrying forward:**
+
+- **The headline claim is true in operations and false in time, and both are reported.** Hops are
+  perfectly flat as the collection grows 200×; wall clock grows 1.7× because a trie is a pointer
+  structure with no locality and a 200,000-word trie has over a million scattered nodes. This is
+  NB-09 §2.4's observation from the other side — there the layout was perfect and the access pattern
+  strided; here the access pattern is fine and there is no layout at all.
+- **The fair comparison is against a sorted array, not a hash table, and the trie loses it.** A hash
+  set cannot do prefix queries at all, so comparing against it flatters the trie. Two binary
+  searches plus a slice beat the subtree traversal by 8×. The trie's real advantage is **updates** —
+  $O(|key|)$ insert/delete against the array's $O(n)$ — so: static dictionary → sorted array,
+  changing dictionary → trie. That is a sharper verdict than most treatments give.
+- **Compression works and is not enough.** A radix tree removes ~80% of the nodes on the low-sharing
+  corpus, and both corpora remain larger than a plain `set`. The honest conclusion: you are not
+  buying lookup speed, you are buying prefix queries, and memory is the price.
+
+**Two bugs the randomised tests found, neither reachable by hand-written examples:**
+
+- **`starts_with("")` on an empty trie returned `True`**, because the root always exists so the walk
+  succeeds. The fix is to require a word at or below the node reached.
+- **Autocomplete's tie-breaking was wrong** whenever one candidate was a prefix of another (`aca`
+  vs `acaa` at equal frequency). I had hand-encoded "most frequent, then alphabetical" into a
+  comparable tuple; the fix is a **key function** (`heapq.nsmallest(..., key=...)`). Same class of
+  error as NB-07 §1.4's inconsistent comparator, and the notebook now says so.
+
+- **Bad at:** memory, non-prefix queries, large alphabets — and exact lookup, where a hash set wins
+  at every size measured.
 
 ### NB-11 — Disjoint Set Union ⬜
 - **Unique theory:** the forest representation; **union by rank/size** and **path compression**
@@ -1064,6 +1110,40 @@ Java at `-Xlint:all -Werror`; every number audited against printed output.**
 ## 11. Status log
 
 Append a dated entry every session. Newest first.
+
+### 2026-09-09 (NB-10)
+- **NB-10 Tries: COMPLETE.** 34 cells (13 code, 21 markdown). Structure clean, all 13 cells run
+  under warnings-as-errors, Java at `-Xlint:all -Werror`, every number audited. **11 of 23.**
+- **The brief's headline claim needed splitting in two.** "Time is O(length) and independent of the
+  number of keys" is true of the *operation count* -- measured perfectly flat at ~8.5 hops as the
+  collection grows 200x -- and false of the *time*, which grows 1.7x over the same range because a
+  trie is a pointer structure with no locality. Both numbers are in the notebook. This is the sixth
+  time in the series that counting and timing have had to be reported separately, and it is now a
+  standard move rather than an improvisation.
+- **The comparison the brief implies is the wrong one, and saying so improved the notebook.** A trie
+  is usually pitched against a hash table, which cannot do prefix queries at all -- so the
+  comparison flatters it. Against a **sorted array with two binary searches**, which can, the trie
+  loses the query by 8x. Its real advantage is updates: O(|key|) against O(n). The notebook's verdict
+  is therefore "static dictionary -> sorted array, changing dictionary -> trie", which is sharper
+  than the usual treatment and required measuring the alternative rather than the strawman.
+- **Two bugs found by the randomised tests, neither reachable by hand-written examples.**
+  `starts_with("")` returned True on an empty trie because the root always exists; and
+  autocomplete's tie-breaking was wrong whenever one candidate was a prefix of another, because I
+  had hand-encoded a two-field ordering into a comparable tuple instead of using a key function.
+  The second is the same class of error as NB-07 §1.4's inconsistent comparator, and the notebook
+  cross-references it.
+- **The Java measurement produced the sharpest single number in the notebook**: a `Node[26]` trie of
+  100,000 words uses 3.8% of its reserved slots, with an average of 1.00 children per node. That one
+  line makes the array-vs-map trade concrete in a way the timing does not.
+- **The locality thread now has a name and a paper.** NB-04 §3 (arrays over linked lists), NB-08
+  §1.6 (B-trees over binary trees), NB-09 §1.4 (4-ary heaps) and NB-10 §1.3 are all the same move:
+  trade a theoretically clean pointer structure for a flatter one the memory hierarchy likes. The
+  reading section points at the HAT-trie paper as the canonical worked example, and later notebooks
+  should keep citing the chain.
+- **Stored outputs and hygiene:** 23 outputs via nbclient, no stderr, no leaked paths, no bare
+  `---` hrules, structure re-verified.
+- **Next:** NB-11 Disjoint Set Union — a structure whose entire value is one operation done
+  extremely well, and the first place in the series where the amortised analysis is genuinely hard.
 
 ### 2026-09-09 (NB-09)
 - **NB-09 Heaps & Priority Queues: COMPLETE.** 37 cells (14 code, 23 markdown). Structure clean,

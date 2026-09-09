@@ -5,7 +5,7 @@ toc: true
 ---
 
 ::: {.callout-note}
-## 10 of 23 built
+## 11 of 23 built
 
 **[NB-00 Complexity & Amortised Analysis](complexity_zero_to_hero.ipynb)** is complete and
 verified. It is the one to read first: it builds `dsa_toolkit.py`, the harness every other
@@ -61,7 +61,12 @@ same guarantee: weaken the invariant instead of working to maintain a strong one
 no pointers at all, which finally closes the locality complaint the previous notebooks kept making
 — and then reopens it, because heapsort still loses to quicksort on access pattern alone.
 
-The remaining 13 are planned. The [build plan](plan.qmd) is the working document and is
+**[NB-10 Tries](tries_zero_to_hero.ipynb)** is the third distinct way the series indexes a lookup:
+not by hashing the key and not by comparing keys, but by walking the key's own structure. Its
+headline claim splits cleanly — the operation count is exactly flat as the collection grows 200×,
+and the wall clock is not.
+
+The remaining 12 are planned. The [build plan](plan.qmd) is the working document and is
 published as-is, including its open questions.
 :::
 
@@ -109,7 +114,7 @@ Harness](complexity_zero_to_hero.ipynb) ✅
 **Trees** — [06 Trees & Traversals](trees_zero_to_hero.ipynb) ✅ · [07 Binary Search Trees](bst_zero_to_hero.ipynb) ✅ · [08 Balanced Trees & B-Trees](balanced_trees_zero_to_hero.ipynb) ✅ · [09 Heaps & Priority Queues](heaps_zero_to_hero.ipynb) ✅ 07 Binary Search Trees · 08 Balanced Trees & B-Trees ·
 09 Heaps & Priority Queues
 
-**Specialised structures** — 10 Tries · 11 Disjoint Set Union · 12 Fenwick & Segment Trees
+**Specialised structures** — [10 Tries](tries_zero_to_hero.ipynb) ✅ · 11 Disjoint Set Union · 12 Fenwick & Segment Trees
 
 **Sorting and searching** — 13 Comparison Sorts & the Lower Bound · 14 Linear-Time Sorts &
 Selection · 15 Binary Search & the Invariant Discipline

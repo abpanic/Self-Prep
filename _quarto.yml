@@ -128,6 +128,10 @@ website:
               text: "08 · Balanced Trees & B-Trees"
             - href: DSA-Zero-to-Hero/heaps_zero_to_hero.ipynb
               text: "09 · Heaps & Priority Queues"
+        - section: "Specialised structures"
+          contents:
+            - href: DSA-Zero-to-Hero/tries_zero_to_hero.ipynb
+              text: "10 · Tries"
         - href: DSA-Zero-to-Hero/plan.qmd
           text: "Build plan & status"
 

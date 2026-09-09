@@ -37,7 +37,7 @@ A few of the results it argues for:
 ::: {.g-col-12 .g-col-md-6}
 ### [DSA: Zero to Hero](DSA-Zero-to-Hero/index.qmd)
 
-**23 notebooks · 10 built · in progress**
+**23 notebooks · 11 built · in progress**
 
 The same treatment for data structures and algorithms, with a stricter quality bar — because in
 this domain correctness and cost are decidable, so they get tested rather than asserted:
@@ -69,6 +69,8 @@ invariant and measures what happens when nothing enforces balance.
 answer, and the first structure in the series whose guarantee holds whatever the input does.
 [**NB-09 Heaps & Priority Queues**](DSA-Zero-to-Hero/heaps_zero_to_hero.ipynb) gets there the
 opposite way, by weakening the invariant until the tree fits in a flat array with no pointers.
+[**NB-10 Tries**](DSA-Zero-to-Hero/tries_zero_to_hero.ipynb) indexes by the key's own structure
+instead of hashing or comparing it.
 
 [Start with NB-00 →](DSA-Zero-to-Hero/complexity_zero_to_hero.ipynb) ·
 [Read the plan →](DSA-Zero-to-Hero/plan.qmd)
