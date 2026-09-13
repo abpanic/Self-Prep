@@ -28,51 +28,49 @@ arranged so each notebook has what it needs from the ones before it.
 
 ### Foundations — read first
 
-| # | Notebook | What you get | Status |
-|---|---|---|---|
-| **00** | [`ml_foundations_zero_to_hero.ipynb`](ml_foundations_zero_to_hero.ipynb) | The shared workflow: train/test splitting, **the five kinds of leakage**, pipelines, missing data, outliers, feature engineering, regression *and* classification metrics, thresholds, calibration, hyperparameter search, shipping and monitoring | ✅ |
+| # | Notebook | What you get |
+|---|---|---|
+| **00** | [`ml_foundations_zero_to_hero.ipynb`](ml_foundations_zero_to_hero.ipynb) | The shared workflow: train/test splitting, **the five kinds of leakage**, pipelines, missing data, outliers, feature engineering, regression *and* classification metrics, thresholds, calibration, hyperparameter search, shipping and monitoring |
 
 ### The core four — the models everything else is measured against
 
-| # | Notebook | What you get | Status |
-|---|---|---|---|
-| **01** | [`linear_regression_zero_to_hero.ipynb`](linear_regression_zero_to_hero.ipynb) | The model fitted three ways (closed form, normal equation, gradient descent), assumptions, Ridge/Lasso, prediction intervals, coefficient inference | ✅ |
-| **02** | [`logistic_regression_zero_to_hero.ipynb`](logistic_regression_zero_to_hero.ipynb) | Log-odds, **why squared error is the wrong loss**, odds ratios, thresholds and calibration in depth, multiclass | ✅ |
-| **03** | [`decision_trees_zero_to_hero.ipynb`](decision_trees_zero_to_hero.ipynb) | Recursive partitioning, impurity, CART from scratch, why greedy ≠ optimal, pruning, scale invariance, and **the instability that motivates everything after it** | ✅ |
-| **04** | [`random_forest_zero_to_hero.ipynb`](random_forest_zero_to_hero.ipynb) | Bootstrap, bagging, **decorrelation**, out-of-bag scoring, and how to read feature importance without fooling yourself | ✅ |
+| # | Notebook | What you get |
+|---|---|---|
+| **01** | [`linear_regression_zero_to_hero.ipynb`](linear_regression_zero_to_hero.ipynb) | The model fitted three ways (closed form, normal equation, gradient descent), assumptions, Ridge/Lasso, prediction intervals, coefficient inference |
+| **02** | [`logistic_regression_zero_to_hero.ipynb`](logistic_regression_zero_to_hero.ipynb) | Log-odds, **why squared error is the wrong loss**, odds ratios, thresholds and calibration in depth, multiclass |
+| **03** | [`decision_trees_zero_to_hero.ipynb`](decision_trees_zero_to_hero.ipynb) | Recursive partitioning, impurity, CART from scratch, why greedy ≠ optimal, pruning, scale invariance, and **the instability that motivates everything after it** |
+| **04** | [`random_forest_zero_to_hero.ipynb`](random_forest_zero_to_hero.ipynb) | Bootstrap, bagging, **decorrelation**, out-of-bag scoring, and how to read feature importance without fooling yourself |
 
 ### The rest of the algorithms
 
 NB-05 is the direct sequel to NB-04 — read it next if you work with tabular data. NB-06 and
 NB-07 are the two **distance-based** models and are best read as a pair.
 
-| # | Notebook | What you get | Status |
-|---|---|---|---|
-| **05** | [`gradient_boosting_zero_to_hero.ipynb`](gradient_boosting_zero_to_hero.ipynb) | Boosting as gradient descent in function space, learning rate vs rounds, early stopping, plus XGBoost / LightGBM / CatBoost. Usually the strongest tabular model | ✅ |
-| **06** | [`svm_zero_to_hero.ipynb`](svm_zero_to_hero.ipynb) | Maximum margins, support vectors, hinge loss, **the kernel trick** derived and verified, and why SVMs stopped scaling | ✅ |
-| **07** | [`knn_zero_to_hero.ipynb`](knn_zero_to_hero.ipynb) | Lazy learning, **the scaling trap** quantified, k as a bias-variance dial, **the curse of dimensionality measured** rather than asserted, the Cover & Hart bound verified, and why "no training time" is a production liability | ✅ |
-| **08** | [`naive_bayes_zero_to_hero.ipynb`](naive_bayes_zero_to_hero.ipynb) | Bayes' rule, **the naive assumption measured failing**, log-space underflow, smoothing, the four variants, and **why a false assumption still classifies well** — plus the metric that hides its overconfidence | ✅ |
-| **09** | [`pca_zero_to_hero.ipynb`](pca_zero_to_hero.ipynb) | Variance maximisation **shown identical to** reconstruction-error minimisation, the SVD route and why, what a component is and is not, and **which preprocessing actually leaks** | ✅ |
-| **10** | [`kmeans_zero_to_hero.ipynb`](kmeans_zero_to_hero.ipynb) | K-Means, hierarchical, DBSCAN and GMM on the same data — **local optima**, the five ways of choosing k that disagree, and **why clustering pure noise still looks like a result** | ✅ |
+| # | Notebook | What you get |
+|---|---|---|
+| **05** | [`gradient_boosting_zero_to_hero.ipynb`](gradient_boosting_zero_to_hero.ipynb) | Boosting as gradient descent in function space, learning rate vs rounds, early stopping, plus XGBoost / LightGBM / CatBoost. Usually the strongest tabular model |
+| **06** | [`svm_zero_to_hero.ipynb`](svm_zero_to_hero.ipynb) | Maximum margins, support vectors, hinge loss, **the kernel trick** derived and verified, and why SVMs stopped scaling |
+| **07** | [`knn_zero_to_hero.ipynb`](knn_zero_to_hero.ipynb) | Lazy learning, **the scaling trap** quantified, k as a bias-variance dial, **the curse of dimensionality measured** rather than asserted, the Cover & Hart bound verified, and why "no training time" is a production liability |
+| **08** | [`naive_bayes_zero_to_hero.ipynb`](naive_bayes_zero_to_hero.ipynb) | Bayes' rule, **the naive assumption measured failing**, log-space underflow, smoothing, the four variants, and **why a false assumption still classifies well** — plus the metric that hides its overconfidence |
+| **09** | [`pca_zero_to_hero.ipynb`](pca_zero_to_hero.ipynb) | Variance maximisation **shown identical to** reconstruction-error minimisation, the SVD route and why, what a component is and is not, and **which preprocessing actually leaks** |
+| **10** | [`kmeans_zero_to_hero.ipynb`](kmeans_zero_to_hero.ipynb) | K-Means, hierarchical, DBSCAN and GMM on the same data — **local optima**, the five ways of choosing k that disagree, and **why clustering pure noise still looks like a result** |
 
 ### Cross-cutting — read after the algorithms
 
 These reference the models above, so they land better once those exist.
 
-| # | Notebook | What you get | Status |
-|---|---|---|---|
-| **11** | [`imbalanced_classification_zero_to_hero.ipynb`](imbalanced_classification_zero_to_hero.ipynb) | PR-AUC vs ROC-AUC, SMOTE built from scratch and its failure modes, **the resampling leak that fabricates 0.83 ROC-AUC from noise**, and why threshold tuning beats all of it | ✅ |
-| **12** | [`explainable_ai_zero_to_hero.ipynb`](explainable_ai_zero_to_hero.ipynb) | Permutation importance, PDP/ICE, **SHAP with its additivity verified**, LIME's instability measured — **how far the methods disagree**, and whether you needed the black box at all | ✅ |
+| # | Notebook | What you get |
+|---|---|---|
+| **11** | [`imbalanced_classification_zero_to_hero.ipynb`](imbalanced_classification_zero_to_hero.ipynb) | PR-AUC vs ROC-AUC, SMOTE built from scratch and its failure modes, **the resampling leak that fabricates 0.83 ROC-AUC from noise**, and why threshold tuning beats all of it |
+| **12** | [`explainable_ai_zero_to_hero.ipynb`](explainable_ai_zero_to_hero.ipynb) | Permutation importance, PDP/ICE, **SHAP with its additivity verified**, LIME's instability measured — **how far the methods disagree**, and whether you needed the black box at all |
 
 ### Applied problem types
 
-| # | Notebook | What you get | Status |
-|---|---|---|---|
-| **13** | [`time_series_zero_to_hero.ipynb`](time_series_zero_to_hero.ipynb) | Lag features and the supervised framing, **why a random split is leakage** (measured), walk-forward validation, the baselines you must beat, and **why trees cannot forecast a trend** | ✅ |
-| **14** | [`recommender_systems_zero_to_hero.ipynb`](recommender_systems_zero_to_hero.ipynb) | Item-item CF and **ALS written from scratch**, **why RMSE ranks the models backwards**, implicit feedback, cold start — and **proof that the popularity baseline only wins because of how the data was collected** | ✅ |
-| **15** | [`anomaly_detection_zero_to_hero.ipynb`](anomaly_detection_zero_to_hero.ipynb) | Isolation Forest and LOF **built from scratch**, `contamination` shown to be a threshold rather than a model, precision@k as the metric a team can act on — and **why LOF scores below random on real fraud**, with the fix | ✅ |
-
-**Progress: 16 of 16 — the series is complete.**
+| # | Notebook | What you get |
+|---|---|---|
+| **13** | [`time_series_zero_to_hero.ipynb`](time_series_zero_to_hero.ipynb) | Lag features and the supervised framing, **why a random split is leakage** (measured), walk-forward validation, the baselines you must beat, and **why trees cannot forecast a trend** |
+| **14** | [`recommender_systems_zero_to_hero.ipynb`](recommender_systems_zero_to_hero.ipynb) | Item-item CF and **ALS written from scratch**, **why RMSE ranks the models backwards**, implicit feedback, cold start — and **proof that the popularity baseline only wins because of how the data was collected** |
+| **15** | [`anomaly_detection_zero_to_hero.ipynb`](anomaly_detection_zero_to_hero.ipynb) | Isolation Forest and LOF **built from scratch**, `contamination` shown to be a threshold rather than a model, precision@k as the metric a team can act on — and **why LOF scores below random on real fraud**, with the fix |
 
 ---
 
@@ -137,7 +135,7 @@ cell ids, stray outputs, leaked local paths.
 
 ## What "verified" means here
 
-Every notebook marked ✅ has had:
+Every notebook in this series has had:
 
 - every code cell executed **in order**, with `warnings.simplefilter("error")` — a warning
   fails the build

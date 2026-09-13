@@ -33,6 +33,7 @@ __all__ = [
     "java_available", "run_java", "JavaError",
     "stress", "cross_check", "StressFailure",
     "measure_growth", "fit_complexity", "growth_table",
+    "SEPARABLE_MARGIN", "SEPARABLE_FLOOR",
     "check_invariant", "InvariantError",
     "edge_cases",
 ]
@@ -176,7 +177,13 @@ def stress(impl, reference, gen, n=1000, seed=0, extra=(), label=""):
             a = impl(case)
         except Exception as exc:
             return ("impl raised %s: %s" % (type(exc).__name__, exc), None)
-        b = reference(case)
+        try:
+            b = reference(case)
+        except Exception as exc:
+            # A reference that raises is a bug in the TEST rather than in the
+            # implementation, but it still deserves the minimised input instead
+            # of a bare traceback from somewhere deep inside the generator loop.
+            return (a, "reference raised %s: %s" % (type(exc).__name__, exc))
         return None if a == b else (a, b)
 
     cases = list(extra) + [gen(rng) for _ in range(n)]
@@ -254,11 +261,26 @@ _MODELS = [
 ]
 
 
-# Two candidate fits closer than this ratio in relative error are treated as
-# indistinguishable by growth_table. 1.3 was chosen because O(n) and O(n log n)
-# over an 8x range of sizes land around 1.0-1.2 apart on noisy timings, while a
-# genuinely wrong candidate (O(n^2) against O(n log n), say) is off by 10x or more.
+# growth_table calls two candidate fits distinguishable only when BOTH of these
+# hold. The ratio alone is not enough, and getting that wrong is how a harness
+# ends up contradicting correct code.
+#
+# SEPARABLE_MARGIN is the ratio test: the runner-up's relative error must exceed
+# the winner's by this factor. 1.3 was chosen because O(n) and O(n log n) over an
+# 8x range of sizes land around 1.0-1.2 apart on noisy timings, while a genuinely
+# wrong candidate (O(n^2) against O(n log n), say) is off by 10x or more.
+#
+# SEPARABLE_FLOOR is the absolute test, and it is the one that matters in
+# practice. A ratio between two SMALL errors proves nothing: timings whose
+# per-element cost drifts up by ~4% per doubling -- ordinary cache pressure on a
+# genuinely linear algorithm -- fit O(n log n) at 0.014 and O(n) at 0.052. That
+# clears the 1.3x ratio comfortably, so a ratio-only rule announces O(n log n)
+# and tells the reader their correct O(n) claim is wrong. Requiring the runner-up
+# to ALSO be a visibly worse fit in absolute terms stops that: a candidate still
+# within ~5% relative error has not been ruled out by this experiment, whatever
+# the ratio says.
 SEPARABLE_MARGIN = 1.3
+SEPARABLE_FLOOR = 0.05
 
 
 def fit_complexity(sizes, times):
@@ -266,7 +288,10 @@ def fit_complexity(sizes, times):
 
     For each candidate f, fit the single scale factor c that minimises the squared
     RELATIVE error of c*f(n) against the measurements — relative, because absolute
-    error would let the largest size decide everything on its own.
+    error would let the largest size decide everything on its own. Setting the
+    derivative of sum(((c*v - t)/t)^2) to zero gives c = sum(v/t) / sum(v^2/t^2).
+    The mean of t/v is NOT that minimiser; using it inflates the error of the
+    badly-fitting candidates, which then feeds growth_table's separability test.
 
     Returns a list of (name, relative_error) sorted best first. Use the top entry,
     but look at the second: when the two are close the measurement cannot tell them
@@ -274,11 +299,19 @@ def fit_complexity(sizes, times):
     """
     sizes = [float(n) for n in sizes]
     times = [float(t) for t in times]
+    spread = len(set(sizes)) > 1
     out = []
     for name, f in _MODELS:
         fv = [f(n) for n in sizes]
-        num = sum((t / v) for t, v in zip(times, fv) if v > 0)
-        den = sum(1.0 for v in fv if v > 0)
+        # A candidate that is CONSTANT across the measured sizes is not a distinct
+        # hypothesis -- it is O(1) wearing a different label, and offering it as the
+        # runner-up crowds out the model the reader actually needs to see. O(2^n) is
+        # the one that does this: 2**min(n, 60) saturates, so above n = 60 it scores
+        # byte-identically to O(1) and takes second place on every large experiment.
+        if spread and name != "O(1)" and len(set(fv)) == 1:
+            continue
+        num = sum((v / t) for t, v in zip(times, fv) if v > 0 and t > 0)
+        den = sum((v / t) ** 2 for t, v in zip(times, fv) if v > 0 and t > 0)
         if den == 0:
             continue
         c = num / den                       # least squares in relative terms
@@ -307,21 +340,31 @@ def growth_table(rows, claim=None, fit=True):
     # cannot separate them, and naming a winner would be false precision. This
     # happens constantly for O(n) vs O(n log n) over a narrow range of sizes --
     # see NB-00 section 3.2, which is about exactly this.
-    separable = err2 > err * SEPARABLE_MARGIN
+    def _beaten(other_err):
+        """Is a candidate scoring `other_err` genuinely ruled out by this data?"""
+        return other_err > err * SEPARABLE_MARGIN and (other_err - err) > SEPARABLE_FLOOR
+
+    separable = _beaten(err2)
     if not separable:
-        print("NOT SEPARABLE: %s and %s fit these timings about equally well."
-              % (best, runner))
+        print("NOT SEPARABLE: %s and %s fit these timings about equally well "
+              "(relative error %.3f vs %.3f)." % (best, runner, err, err2))
         print("  Read the ratio column instead, and widen the range of sizes or")
         print("  count operations rather than timing them (NB-00 1.7) if you need")
         print("  to settle it.")
 
     if claim:
+        # Judge the claim by ITS OWN fit, not by whether it happened to land in the
+        # runner-up slot. A claim can sit third and still be indistinguishable from
+        # the winner -- that is one experiment failing to separate three candidates,
+        # which is not evidence against the claim.
+        claim_err = dict(ranked).get(claim)
         if best == claim:
             print("claimed %s -> measurement MATCHES the claim" % claim)
-        elif not separable and runner == claim:
+        elif claim_err is not None and not _beaten(claim_err):
             print("claimed %s -> CONSISTENT with the measurement, which cannot"
                   % claim)
-            print("  distinguish it from %s here." % best)
+            print("  distinguish it from %s here (relative error %.3f vs %.3f)."
+                  % (best, claim_err, err))
         else:
             print("claimed %s -> measurement does NOT match the claim" % claim)
             print("  Do not paper over this. Either the claim is wrong, the input never")
